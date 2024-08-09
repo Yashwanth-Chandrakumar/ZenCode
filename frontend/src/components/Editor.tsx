@@ -16,12 +16,11 @@ int main() {
     }
 }`;
 
-  const [language, setLanguage] = useState("cpp"); // Default to C++
+  const [language, setLanguage] = useState("cpp");
   const [code, setCode] = useState(cppDefault);
   const [output, setOutput] = useState("");
 
   useEffect(() => {
-    // Change the code template when the language changes
     setCode(language === "cpp" ? cppDefault : javaDefault);
   }, [language]);
 
@@ -29,7 +28,7 @@ int main() {
     const endpoint = language === "cpp" ? "cpp/compile" : "java/compile";
     try {
       const response = await axios.post(`http://localhost:8080/${endpoint}`, { code });
-      setOutput(response.data.output);
+      setOutput(response.data);
     } catch (error) {
       setOutput("Error: " + error.message);
     }
@@ -46,8 +45,8 @@ int main() {
         </select>
       </div>
       <textarea
-        rows="15"
-        cols="80"
+        rows={15}
+        cols={80}
         value={code}
         onChange={(e) => setCode(e.target.value)}
         style={{ fontFamily: "monospace", fontSize: "14px" }}
