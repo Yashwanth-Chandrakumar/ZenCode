@@ -2,13 +2,18 @@ import axios from "axios";
 import React, { useState } from "react";
 
 function Editor() {
-  const [code, setCode] = useState("#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Hello, World!\" << endl;\n    return 0;\n}");
+  const [code, setCode] = useState(
+    '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, vickyWorld!" << endl;\n    return 0;\n}'
+  );
   const [output, setOutput] = useState("");
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/compile", { code });
-      setOutput(response.data.output);
+      const response = await axios.post("http://localhost:8080/compile", {
+        code,
+      });
+      console.log(response);
+      setOutput(response.data);
     } catch (error) {
       setOutput("Error: " + error.message);
     }
