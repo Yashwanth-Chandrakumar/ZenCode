@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 function Editor() {
-  const cppDefaultCode = `#include <iostream>
+  const cppDefault = `#include <iostream>
 using namespace std;
 
 int main() {
@@ -10,19 +10,19 @@ int main() {
     return 0;
 }`;
 
-  const javaDefaultCode = `public class Main {
+  const javaDefault = `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
 }`;
 
   const [language, setLanguage] = useState("cpp"); // Default to C++
-  const [code, setCode] = useState(cppDefaultCode);
+  const [code, setCode] = useState(cppDefault);
   const [output, setOutput] = useState("");
 
   useEffect(() => {
     // Change the code template when the language changes
-    setCode(language === "cpp" ? cppDefaultCode : javaDefaultCode);
+    setCode(language === "cpp" ? cppDefault : javaDefault);
   }, [language]);
 
   const handleSubmit = async () => {
