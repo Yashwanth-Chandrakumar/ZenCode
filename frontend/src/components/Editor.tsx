@@ -7,7 +7,7 @@ function Editor() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/compile", { code });
+      const response = await axios.post("http://localhost:8080/compile", { code });
       setOutput(response.data.output);
     } catch (error) {
       setOutput("Error: " + error.message);
