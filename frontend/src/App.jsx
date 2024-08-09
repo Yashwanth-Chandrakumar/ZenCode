@@ -1,5 +1,8 @@
 import { useState } from 'react'
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import './App.css'
 
 function App() {
@@ -7,8 +10,14 @@ function App() {
 
   return (
     <>
+<<<<<<< Updated upstream
       
+=======
+    <h1 className='text-red-500'>Hello</h1>
+    
+>>>>>>> Stashed changes
     </>
+        
   )
 }
 
