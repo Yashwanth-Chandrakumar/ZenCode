@@ -22,11 +22,14 @@ FROM ubuntu:20.04
 # Set environment variables to avoid user interaction during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install necessary packages including g++ and Java
+# Install necessary packages including g++, Java, C, and Python
 RUN apt-get update && \
     apt-get install -y \
     g++ \
+    gcc \
     openjdk-17-jdk \
+    python3 \
+    python3-pip \
     curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
