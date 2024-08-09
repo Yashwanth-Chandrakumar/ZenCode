@@ -77,9 +77,18 @@ int main() {
     return highlightedCode;
   };
 
+  const lineNumbersRef = useRef(null);
+
+  const updateLineNumbers = () => {
+    const lineCount = code.split('\n').length;
+    const lineNumbers = Array(lineCount).fill().map((_, i) => i + 1).join('<br>');
+    lineNumbersRef.current.innerHTML = lineNumbers;
+  };
+
   useEffect(() => {
     const highlighted = syntaxHighlight(code);
     editorRef.current.innerHTML = highlighted.replace(/\n/g, "<br>");
+    updateLineNumbers();
   }, [code]);
 
   return (
@@ -96,23 +105,30 @@ int main() {
           <option value="java">Java</option>
         </select>
       </div>
-      <div
-        className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700"
-        style={{ height: "300px" }}
-      >
+      <div className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700 flex" style={{ height: "300px" }}>
         <div
-          ref={editorRef}
-          className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre-wrap"
-          aria-hidden="true"
-          dangerouslySetInnerHTML={{ __html: syntaxHighlight(code).replace(/\n/g, "<br>") }}
+          ref={lineNumbersRef}
+          className="font-mono text-sm p-2 text-gray-500 dark:text-gray-400 text-right pr-4 border-r border-gray-300 dark:border-gray-600 select-none"
+          style={{ minWidth: "40px" }}
         ></div>
-        <textarea
-          value={code}
-          onChange={handleCodeChange}
-          onKeyDown={handleKeyDown}
-          className="w-full h-full font-mono text-sm p-2 bg-transparent text-transparent caret-black dark:caret-white focus:outline-none focus:ring-0 resize-none"
-          spellCheck="false"
-        />
+        <div className="relative flex-grow">
+          <pre
+            ref={editorRef}
+            className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre-wrap overflow-hidden"
+            aria-hidden="true"
+          ></pre>
+          <textarea
+            value={code}
+            onChange={handleCodeChange}
+            onKeyDown={handleKeyDown}
+            onScroll={(e) => {
+              editorRef.current.scrollTop = e.target.scrollTop;
+              lineNumbersRef.current.scrollTop = e.target.scrollTop;
+            }}
+            className="absolute inset-0 w-full h-full font-mono text-sm p-2 bg-transparent text-transparent caret-black dark:caret-white focus:outline-none focus:ring-0 resize-none"
+            spellCheck="false"
+          />
+        </div>
       </div>
       <button
         onClick={handleSubmit}
