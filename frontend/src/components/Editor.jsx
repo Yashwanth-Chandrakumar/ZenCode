@@ -28,7 +28,7 @@ int main() {
   const handleSubmit = async () => {
     const endpoint = language === "cpp" ? "cpp/compile" : "java/compile";
     try {
-      const response = await axios.post(`http://localhost:8080/${endpoint}`, {
+      const response = await axios.post(`https://zencode-latest.onrender.com/${endpoint}`, {
         code,
       });
       setOutput(response.data);
