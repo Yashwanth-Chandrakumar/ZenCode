@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.text.DecimalFormat;
 
 @RestController
 @CrossOrigin("*")
@@ -58,6 +59,7 @@ public class JavaCompiler {
                 MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
                 MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
                 long memoryUsed = heapUsage.getUsed();
+                double memoryUsedMB = memoryUsed / (1024.0 * 1024);
 
                 BufferedReader outputReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
                 StringBuilder output = new StringBuilder();
@@ -65,10 +67,11 @@ public class JavaCompiler {
                     output.append(line).append("\n");
                 }
 
+                DecimalFormat df = new DecimalFormat("#.00");
                 return ResponseEntity.ok("Output:\n" + output.toString() +
                         "Compilation time: " + compileTime + " ms\n" +
                         "Execution time: " + executionTime + " ms\n" +
-                        "Memory used: " + memoryUsed + " bytes\n");
+                        "Memory used: " + df.format(memoryUsedMB) + " MB\n");
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Compilation or execution failed: " + e.getMessage());
