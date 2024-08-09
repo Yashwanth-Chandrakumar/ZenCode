@@ -76,20 +76,30 @@ int main() {
 
     return highlightedCode;
   };
-
   const lineNumbersRef = useRef(null);
+  const editorWrapperRef = useRef(null);
+  const highlightedCodeRef = useRef(null);
+  const textareaRef = useRef(null);
 
   const updateLineNumbers = () => {
     const lineCount = code.split('\n').length;
-    const lineNumbers = Array(lineCount).fill().map((_, i) => i + 1).join('<br>');
+    const lineNumbers = Array(lineCount).fill().map((_, i) => `<div>${i + 1}</div>`).join('');
     lineNumbersRef.current.innerHTML = lineNumbers;
   };
 
   useEffect(() => {
     const highlighted = syntaxHighlight(code);
-    editorRef.current.innerHTML = highlighted.replace(/\n/g, "<br>");
+    highlightedCodeRef.current.innerHTML = highlighted.replace(/\n/g, "<br>");
     updateLineNumbers();
   }, [code]);
+
+  const handleScroll = (e) => {
+    if (editorWrapperRef.current) {
+      const { scrollTop } = e.target;
+      lineNumbersRef.current.scrollTop = scrollTop;
+      highlightedCodeRef.current.scrollTop = scrollTop;
+    }
+  };
 
   return (
     <div className="p-6 min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -108,23 +118,21 @@ int main() {
       <div className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700 flex" style={{ height: "300px" }}>
         <div
           ref={lineNumbersRef}
-          className="font-mono text-sm p-2 text-gray-500 dark:text-gray-400 text-right pr-4 border-r border-gray-300 dark:border-gray-600 select-none"
+          className="font-mono text-sm p-2 text-gray-500 dark:text-gray-400 text-right pr-4 border-r border-gray-300 dark:border-gray-600 select-none overflow-hidden"
           style={{ minWidth: "40px" }}
         ></div>
-        <div className="relative flex-grow">
+        <div ref={editorWrapperRef} className="relative flex-grow overflow-hidden">
           <pre
-            ref={editorRef}
-            className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre-wrap overflow-hidden"
+            ref={highlightedCodeRef}
+            className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre-wrap overflow-auto"
             aria-hidden="true"
           ></pre>
           <textarea
+            ref={textareaRef}
             value={code}
             onChange={handleCodeChange}
             onKeyDown={handleKeyDown}
-            onScroll={(e) => {
-              editorRef.current.scrollTop = e.target.scrollTop;
-              lineNumbersRef.current.scrollTop = e.target.scrollTop;
-            }}
+            onScroll={handleScroll}
             className="absolute inset-0 w-full h-full font-mono text-sm p-2 bg-transparent text-transparent caret-black dark:caret-white focus:outline-none focus:ring-0 resize-none"
             spellCheck="false"
           />
