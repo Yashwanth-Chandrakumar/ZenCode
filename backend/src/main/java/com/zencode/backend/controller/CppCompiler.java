@@ -13,9 +13,9 @@ import java.io.InputStreamReader;
 
 @RestController
 @CrossOrigin("*")
-public class CompilerController {
+public class CppCompiler {
 
-    @PostMapping("cpp/compile")
+    @PostMapping("/cpp/compile")
 
     public ResponseEntity<String> compileCode(@RequestBody CodeRequest codeRequest) {
         try {

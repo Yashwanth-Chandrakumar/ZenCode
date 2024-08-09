@@ -27,7 +27,13 @@ int main() {
   const handleSubmit = async () => {
     const endpoint = language === "cpp" ? "cpp/compile" : "java/compile";
     try {
+<<<<<<< Updated upstream
       const response = await axios.post(`http://localhost:8080/${endpoint}`, { code });
+=======
+      const response = await axios.post(`http://localhost:8080/${endpoint}`, {
+        code,
+      });
+>>>>>>> Stashed changes
       setOutput(response.data);
     } catch (error) {
       setOutput("Error: " + error.message);
