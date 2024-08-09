@@ -1,6 +1,5 @@
-import axios from "axios";
+import axios from 'axios';
 import React, { useEffect, useRef, useState } from "react";
-
 function Editor() {
   const cppDefault = `#include <iostream>
 using namespace std;
@@ -28,9 +27,10 @@ int main() {
   const handleSubmit = async () => {
     const endpoint = language === "cpp" ? "cpp/compile" : "java/compile";
     try {
-      const response = await axios.post(`http://localhost:8080/${endpoint}`, {
+      const response = await axios.post(`http://3.91.74.46:8080/${endpoint}`, {
         code,
       });
+      console.log(response)
       setOutput(response.data);
     } catch (error) {
       setOutput("Error: " + error.message);
@@ -54,6 +54,34 @@ int main() {
     setCode(e.target.value);
   };
 
+  const escapeHtml = (unsafe) => {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
+  const syntaxHighlight = (code) => {
+    let highlightedCode = escapeHtml(code)
+      // .replace(/(\/\/.*$)/gm, '<span class="text-green-600">$1</span>') // single-line comments
+      .replace(/\/\*[\s\S]*?\*\//g, '<span class="text-green-600">$&</span>') // multi-line comments
+      .replace(/("(?:[^"\\]|\\.)*")/g, '<span class="text-yellow-500">$1</span>') // strings
+      .replace(/\b(vector|int|float|double|char|string|String|bool|void|if|else|for|while|return|public|private|class|static|const)\b/g, '<span class="text-blue-500">$1</span>') // keywords
+      .replace(/(#include|#define|using namespace std)/g, '<span class="text-purple-500">$1</span>') // preprocessor directives
+      .replace(/(import)/g, '<span class="text-purple-500">$1</span>') // preprocessor directives
+      .replace(/(endl|cout|cin)/g, '<span class="text-green-600">$1</span>') // preprocessor directives
+      .replace(/(System.out.println|System.out.print)/g, '<span class="text-red-500">$1</span>'); // preprocessor directives
+
+    return highlightedCode;
+  };
+
+  useEffect(() => {
+    const highlighted = syntaxHighlight(code);
+    editorRef.current.innerHTML = highlighted.replace(/\n/g, "<br>");
+  }, [code]);
+
   return (
     <div className="p-6 min-h-screen bg-gray-100 dark:bg-gray-900">
       <h1 className="text-3xl font-bold mb-4 text-black dark:text-white">Code Editor</h1>
@@ -72,12 +100,17 @@ int main() {
         className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700"
         style={{ height: "300px" }}
       >
-        <textarea
+        <div
           ref={editorRef}
+          className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre-wrap"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: syntaxHighlight(code).replace(/\n/g, "<br>") }}
+        ></div>
+        <textarea
           value={code}
           onChange={handleCodeChange}
           onKeyDown={handleKeyDown}
-          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-black dark:text-white dark:bg-black"
+          className="w-full h-full font-mono text-sm p-2 bg-transparent text-transparent caret-black dark:caret-white focus:outline-none focus:ring-0 resize-none"
           spellCheck="false"
         />
       </div>
