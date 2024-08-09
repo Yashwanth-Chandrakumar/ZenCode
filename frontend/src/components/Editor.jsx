@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 
 function Editor() {
@@ -36,30 +37,6 @@ int main() {
     }
   };
 
-  const handleCodeChange = (e) => {
-    setCode(e.target.value);
-  };
-
-  const highlightCode = (code) => {
-    if (language === "cpp") {
-      return code
-        .replace(/(\/\/.*$)/gm, '<span style="color: #999999;">$1</span>') // Comments
-        .replace(
-          /\b(int|float|double|char|if|else|for|while|return|cout|endl)\b/g,
-          '<span style="color: #d73a49;">$1</span>'
-        ) // Keywords
-        .replace(/("[^"]*")/g, '<span style="color: #032f62;">$1</span>'); // Strings
-    } else if (language === "java") {
-      return code
-        .replace(/(\/\/.*$)/gm, '<span style="color: #999999;">$1</span>') // Comments
-        .replace(
-          /\b(public|class|static|void|int|float|double|if|else|for|while|return|System|out|println)\b/g,
-          '<span style="color: #d73a49;">$1</span>'
-        ) // Keywords
-        .replace(/("[^"]*")/g, '<span style="color: #032f62;">$1</span>'); // Strings
-    }
-  };
-
   const handleKeyDown = (e) => {
     if (e.key === "Tab") {
       e.preventDefault();
@@ -71,6 +48,10 @@ int main() {
         e.target.selectionStart = e.target.selectionEnd = start + 4;
       }, 0);
     }
+  };
+
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
   };
 
   return (
@@ -91,23 +72,12 @@ int main() {
         className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700"
         style={{ height: "300px" }}
       >
-        <div
-          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-black dark:text-white dark:bg-black"
-          style={{ whiteSpace: "pre-wrap" }}
-          dangerouslySetInnerHTML={{ __html: highlightCode(code) }}
-        />
         <textarea
           ref={editorRef}
           value={code}
           onChange={handleCodeChange}
           onKeyDown={handleKeyDown}
-          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-transparent bg-transparent caret-white absolute top-0 left-0"
-          style={{
-            resize: "none",
-            background: "none",
-            color: "transparent",
-            whiteSpace: "pre-wrap",
-          }}
+          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-black dark:text-white dark:bg-black"
           spellCheck="false"
         />
       </div>
