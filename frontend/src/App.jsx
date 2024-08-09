@@ -1,11 +1,12 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+import Editor from './components/Editor'
 import Footer from './components/Footer'
-import Home from './pages/Home'
-import PlaygroundPage from './pages/PlaygroundPage'
+import Header from './components/Header'
 import ArenaPage from './pages/ArenaPage'
 import BattlegroundPage from './pages/BattlegroundPage'
+import Home from './pages/Home'
+import PlaygroundPage from './pages/PlaygroundPage'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/arena" element={<ArenaPage />} />
             <Route path="/battleground" element={<BattlegroundPage />} />
+            <Route path="/editor" element={<Editor />} />
           </Routes>
         </main>
         <Footer />

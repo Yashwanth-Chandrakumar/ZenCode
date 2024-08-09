@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 
 function Editor() {
@@ -37,6 +36,30 @@ int main() {
     }
   };
 
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
+  };
+
+  const highlightCode = (code) => {
+    if (language === "cpp") {
+      return code
+        .replace(/(\/\/.*$)/gm, '<span style="color: #999999;">$1</span>') // Comments
+        .replace(
+          /\b(int|float|double|char|if|else|for|while|return|cout|endl)\b/g,
+          '<span style="color: #d73a49;">$1</span>'
+        ) // Keywords
+        .replace(/("[^"]*")/g, '<span style="color: #032f62;">$1</span>'); // Strings
+    } else if (language === "java") {
+      return code
+        .replace(/(\/\/.*$)/gm, '<span style="color: #999999;">$1</span>') // Comments
+        .replace(
+          /\b(public|class|static|void|int|float|double|if|else|for|while|return|System|out|println)\b/g,
+          '<span style="color: #d73a49;">$1</span>'
+        ) // Keywords
+        .replace(/("[^"]*")/g, '<span style="color: #032f62;">$1</span>'); // Strings
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Tab") {
       e.preventDefault();
@@ -50,42 +73,52 @@ int main() {
     }
   };
 
-  const handleCodeChange = (e) => {
-    setCode(e.target.value);
-  };
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4">Code Editor</h1>
+    <div className="p-6 min-h-screen bg-gray-100 dark:bg-gray-900">
+      <h1 className="text-3xl font-bold mb-4 text-black dark:text-white">Code Editor</h1>
       <div className="mb-4">
-        <label className="mr-2">Select Language: </label>
+        <label className="mr-2 text-black dark:text-white">Select Language: </label>
         <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded bg-white dark:bg-gray-700 dark:text-white"
         >
           <option value="cpp">C++</option>
           <option value="java">Java</option>
         </select>
       </div>
-      <div className="relative border rounded shadow-inner bg-white overflow-hidden" style={{ height: '300px' }}>
+      <div
+        className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700"
+        style={{ height: "300px" }}
+      >
+        <div
+          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-black dark:text-white dark:bg-black"
+          style={{ whiteSpace: "pre-wrap" }}
+          dangerouslySetInnerHTML={{ __html: highlightCode(code) }}
+        />
         <textarea
           ref={editorRef}
           value={code}
           onChange={handleCodeChange}
           onKeyDown={handleKeyDown}
-          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-black bg-white"
+          className="w-full h-full font-mono text-sm p-2 focus:outline-none focus:ring-0 text-transparent bg-transparent caret-white absolute top-0 left-0"
+          style={{
+            resize: "none",
+            background: "none",
+            color: "transparent",
+            whiteSpace: "pre-wrap",
+          }}
           spellCheck="false"
         />
       </div>
       <button
         onClick={handleSubmit}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="mt-4 px-4 py-2 rounded bg-blue-600 text-white hover:opacity-80 dark:bg-blue-500"
       >
         Run Code
       </button>
-      <h2 className="text-xl font-semibold mt-6 mb-2">Output:</h2>
-      <pre className="bg-gray-800 text-white p-4 rounded overflow-auto">
+      <h2 className="text-xl font-semibold mt-6 mb-2 text-black dark:text-white">Output:</h2>
+      <pre className="p-4 rounded overflow-auto bg-gray-100 dark:bg-gray-800 dark:text-white text-black">
         {output}
       </pre>
     </div>
