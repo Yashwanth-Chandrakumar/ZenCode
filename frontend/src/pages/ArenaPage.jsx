@@ -1,6 +1,6 @@
 import React from "react";
-import ProblemsList from "../components/Arena/ProblemsList";
-import ProblemsDetails from "../components/Arena/ProblemsDetails";
+import ProblemsDetails from "../components/Arena/ProblemDetails";
+import ProblemsList from "../components/Arena/ProblemList";
 
 function ArenaPage() {
   return (
