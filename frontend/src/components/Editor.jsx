@@ -209,9 +209,6 @@ int main() {
 
   return (
     <div className="p-6 min-h-screen bg-gray-100 dark:bg-gray-900">
-      <h1 className="text-3xl font-bold mb-4 text-black dark:text-white">
-        Code Editor
-      </h1>
       <div className="mb-4">
         <label className="mr-2 text-black dark:text-white">
           Select Language:{" "}
@@ -229,7 +226,7 @@ int main() {
       </div>
       <div
         className="relative border rounded shadow-inner overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700 flex"
-        style={{ height: "300px" }}
+        style={{ height: "400px" }}
       >
         <div
           ref={lineNumbersRef}
