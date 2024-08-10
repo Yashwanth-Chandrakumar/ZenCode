@@ -1,7 +1,6 @@
 import React from 'react'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import Editor from './components/Editor'
-import Footer from './components/Footer'
 import Header from './components/Header'
 import ArenaPage from './pages/ArenaPage'
 import BattlegroundPage from './pages/BattlegroundPage'
@@ -22,7 +21,6 @@ function App() {
             <Route path="/editor" element={<Editor />} />
           </Routes>
         </main>
-        <Footer />
       </div>
     </Router>
   )
