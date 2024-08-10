@@ -25,7 +25,7 @@ function ProblemsList({ onProblemSelect }) {
   };
 
   return (
-    <div className="overflow-y-auto h-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+    <div className="overflow-y-auto h-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
       <ul className="space-y-2">
         {problems.map((problem) => (
           <li

@@ -341,41 +341,99 @@ useEffect(() => {
         <h2 className="text-xl font-bold mb-2 text-black dark:text-white">
           Results:
         </h2>
-        {testResults.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-black dark:text-white">
-              Test Case Results:
-            </h3>
-            {testResults.map((result, index) => (
-              <div key={index} className="mb-4 p-4 bg-gray-200 dark:bg-gray-800 rounded">
-                <p className="text-black dark:text-white">Input: {result.input}</p>
-                <p className="text-black dark:text-white">Expected Output: {result.expectedOutput}</p>
-                <p className="text-black dark:text-white">Actual Output: {result.actualOutput}</p>
-                <p className={result.passed ? "text-green-600" : "text-red-600"}>
-                  {result.passed ? "Passed" : "Failed"}
-                </p>
-                {result.compilationTime && <p className="text-sm text-black dark:text-white">Compilation Time: {result.compilationTime} ms</p>}
-                {result.executionTime && <p className="text-sm text-black dark:text-white">Execution Time: {result.executionTime} ms</p>}
-                {result.memoryUsed && <p className="text-sm text-black dark:text-white">Memory Used: {result.memoryUsed} KB</p>}
+        <div className="mt-6 space-y-6">
+  {testResults.length > 0 && (
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Test Results:</h3>
+      <ul className="space-y-4">
+        {testResults.map((result, index) => (
+          <li
+            key={index}
+            className={`p-4 border rounded ${
+              result.passed ? "bg-green-50 dark:bg-green-900" : "bg-red-50 dark:bg-red-900"
+            }`}
+          >
+            <div>
+              <strong className="text-gray-900 dark:text-gray-100">Input:</strong>
+              <pre className="bg-gray-200 dark:bg-gray-700 p-2 rounded text-gray-900 dark:text-gray-100">{result.input}</pre>
+            </div>
+            <div className="mt-2">
+              <strong className="text-gray-900 dark:text-gray-100">Expected Output:</strong>
+              <pre className="bg-gray-200 dark:bg-gray-700 p-2 rounded text-gray-900 dark:text-gray-100">{result.expectedOutput}</pre>
+            </div>
+            <div className="mt-2">
+              <strong className="text-gray-900 dark:text-gray-100">Actual Output:</strong>
+              <pre className={`bg-gray-200 dark:bg-gray-700 p-2 rounded ${
+                result.passed ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+              }`}>{result.actualOutput}</pre>
+            </div>
+            {result.compilationTime && (
+              <div className="mt-2">
+                <strong className="text-gray-900 dark:text-gray-100">Compilation Time:</strong> {result.compilationTime} ms
               </div>
-            ))}
-          </div>
-        )}
-        {submissionResults && (
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-black dark:text-white">
-              Submission Results:
-            </h3>
-            <p className="text-black dark:text-white">
-              Passed {submissionResults.passedTests} out of {submissionResults.totalTests} test cases
-            </p>
-            {submissionResults.results.map((result, index) => (
-              <p key={index} className={result.passed ? "text-green-600" : "text-red-600"}>
-                Test Case {index + 1}: {result.passed ? "Passed" : "Failed"}
-              </p>
-            ))}
-          </div>
-        )}
+            )}
+            <div className="mt-2">
+              <strong className="text-gray-900 dark:text-gray-100">Execution Time:</strong> {result.executionTime} ms
+            </div>
+            <div className="mt-2">
+              <strong className="text-gray-900 dark:text-gray-100">Memory Used:</strong> {result.memoryUsed} KB
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+  {submissionResults && (
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Submission Results:</h3>
+      <div className="p-4 border rounded bg-gray-100 dark:bg-gray-800">
+        <p className="text-gray-900 dark:text-gray-100">
+          Total Tests: <strong>{submissionResults.totalTests}</strong>
+        </p>
+        <p className="text-gray-900 dark:text-gray-100">
+          Passed Tests: <strong>{submissionResults.passedTests}</strong>
+        </p>
+        <div className="mt-4">
+          {submissionResults.results.map((result, index) => (
+            <div
+              key={index}
+              className={`p-4 border rounded ${
+                result.passed ? "bg-green-50 dark:bg-green-900" : "bg-red-50 dark:bg-red-900"
+              }`}
+            >
+              <div>
+                <strong className="text-gray-900 dark:text-gray-100">Input:</strong>
+                <pre className="bg-gray-200 dark:bg-gray-700 p-2 rounded text-gray-900 dark:text-gray-100">{result.input}</pre>
+              </div>
+              <div className="mt-2">
+                <strong className="text-gray-900 dark:text-gray-100">Expected Output:</strong>
+                <pre className="bg-gray-200 dark:bg-gray-700 p-2 rounded text-gray-900 dark:text-gray-100">{result.expectedOutput}</pre>
+              </div>
+              <div className="mt-2">
+                <strong className="text-gray-900 dark:text-gray-100">Actual Output:</strong>
+                <pre className={`bg-gray-200 dark:bg-gray-700 p-2 rounded ${
+                  result.passed ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                }`}>{result.actualOutput}</pre>
+              </div>
+              {result.compilationTime && (
+              <div className="mt-2">
+                <strong className="text-gray-900 dark:text-gray-100">Compilation Time:</strong> {result.compilationTime} ms
+              </div>
+            )}
+              <div className="mt-2">
+                <strong className="text-gray-900 dark:text-gray-100">Execution Time:</strong> {result.executionTime} ms
+              </div>
+              <div className="mt-2">
+                <strong className="text-gray-900 dark:text-gray-100">Memory Used:</strong> {result.memoryUsed} MB
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   );
