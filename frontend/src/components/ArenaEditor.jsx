@@ -259,13 +259,21 @@ useEffect(() => {
     const highlighted = syntaxHighlight(code);
     highlightedCodeRef.current.innerHTML = highlighted.replace(/\n/g, "<br>");
     updateLineNumbers();
+    
+    // Synchronize scroll position after updating content
+    if (textareaRef.current && highlightedCodeRef.current) {
+      highlightedCodeRef.current.scrollTop = textareaRef.current.scrollTop;
+      highlightedCodeRef.current.scrollLeft = textareaRef.current.scrollLeft;
+    }
   }, [code]);
+  
 
   const handleScroll = (e) => {
     if (editorWrapperRef.current) {
-      const { scrollTop } = e.target;
+      const { scrollTop, scrollLeft } = e.target;
       lineNumbersRef.current.scrollTop = scrollTop;
       highlightedCodeRef.current.scrollTop = scrollTop;
+      highlightedCodeRef.current.scrollLeft = scrollLeft;
     }
   };
 
@@ -300,19 +308,19 @@ useEffect(() => {
           className="relative flex-grow overflow-hidden"
         >
           <pre
-            ref={highlightedCodeRef}
-            className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre-wrap overflow-auto"
-            aria-hidden="true"
-          ></pre>
-          <textarea
-            ref={textareaRef}
-            value={code}
-            onChange={handleCodeChange}
-            onKeyDown={handleKeyDown}
-            onScroll={handleScroll}
-            className="absolute inset-0 w-full h-full font-mono text-sm p-2 bg-transparent text-transparent caret-black dark:caret-white focus:outline-none focus:ring-0 resize-none"
-            spellCheck="false"
-          />
+  ref={highlightedCodeRef}
+  className="absolute inset-0 font-mono text-sm p-2 text-black dark:text-white pointer-events-none whitespace-pre overflow-auto"
+  aria-hidden="true"
+></pre>
+<textarea
+  ref={textareaRef}
+  value={code}
+  onChange={handleCodeChange}
+  onKeyDown={handleKeyDown}
+  onScroll={handleScroll}
+  className="absolute inset-0 w-full h-full font-mono text-sm p-2 bg-transparent text-transparent caret-black dark:caret-white focus:outline-none focus:ring-0 resize-none overflow-auto"
+  spellCheck="false"
+/>
         </div>
       </div>
       <div className="mt-4 space-x-4">
