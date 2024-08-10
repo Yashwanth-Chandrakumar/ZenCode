@@ -73,7 +73,6 @@ int main() {
     }
 
     try {
-      console.log(input)
       const response = await axios.post(
         `http://100.26.207.44:8080/${endpoint}`,
         {
@@ -83,8 +82,8 @@ int main() {
       );
 
       console.log(response);
-      setOutput(response.data.output);
-      setCompilationTime(response.data.compilationTime);
+      setOutput(response.data.data);
+      setCompilationTime(response.data.compileTime);
       setExecutionTime(response.data.executionTime);
       setMemoryUsed(response.data.memoryUsed);
     } catch (error) {
@@ -280,10 +279,11 @@ int main() {
           {output}
         </pre>
         {compilationTime && (
-          <p className="text-sm text-black dark:text-white">
-            Compilation Time: {compilationTime} ms
-          </p>
-        )}
+  <p className="text-sm text-black dark:text-white">
+    Compilation Time: {compilationTime} ms
+  </p>
+)}
+
         {executionTime && (
           <p className="text-sm text-black dark:text-white">
             Execution Time: {executionTime} ms
