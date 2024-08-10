@@ -27,6 +27,7 @@ int main() {
 
   const [language, setLanguage] = useState("cpp");
   const [code, setCode] = useState(cppDefault);
+  const [input, setInput] = useState("");  // New state for custom input
   const [output, setOutput] = useState("");
   const editorRef = useRef(null);
 
@@ -69,10 +70,12 @@ int main() {
     }
 
     try {
+      console.log(input)
       const response = await axios.post(
-        `http://98.80.68.135:8080/${endpoint}`,
+        `http://100.26.207.44:8080/${endpoint}`,
         {
           code,
+          input,
         }
       );
 
@@ -100,6 +103,10 @@ int main() {
     setCode(e.target.value);
   };
 
+  const handleInputChange = (e) => {  
+    setInput(e.target.value);
+  };
+
   const escapeHtml = (unsafe) => {
     return unsafe
       .replace(/&/g, "&amp;")
@@ -111,25 +118,24 @@ int main() {
 
   const syntaxHighlight = (code) => {
     let highlightedCode = escapeHtml(code)
-      .replace(/\/\*[\s\S]*?\*\//g, '<span class="text-green-600">$&</span>') // multi-line comments
       .replace(
         /("(?:[^"\\]|\\.)*")/g,
         '<span class="text-yellow-500">$1</span>'
-      ) // strings
+      ) 
       .replace(
         /\b(vector|int|float|double|char|string|String|bool|void|if|else|for|while|return|public|private|class|static|const)\b/g,
         '<span class="text-blue-500">$1</span>'
-      ) // keywords
+      ) 
       .replace(
         /(#include|#define|using namespace std)/g,
         '<span class="text-purple-500">$1</span>'
-      ) // preprocessor directives
-      .replace(/(import)/g, '<span class="text-purple-500">$1</span>') // preprocessor directives
-      .replace(/(endl|cout|cin)/g, '<span class="text-green-600">$1</span>') // preprocessor directives
+      ) 
+      .replace(/(import)/g, '<span class="text-purple-500">$1</span>') 
+      .replace(/(endl|cout|cin|input)/g, '<span class="text-green-600">$1</span>') 
       .replace(
-        /(System.out.println|System.out.print)/g,
+        /(System.out.println|System.out.print|printf|print)/g,
         '<span class="text-red-500">$1</span>'
-      ); // preprocessor directives
+      ); 
 
     return highlightedCode;
   };
@@ -210,6 +216,15 @@ int main() {
             spellCheck="false"
           />
         </div>
+      </div>
+      <div className="mt-4">
+        <label className="mr-2 text-black dark:text-white">Custom Input:</label>
+        <textarea
+          value={input}
+          onChange={handleInputChange}
+          className="w-full px-2 py-1 border rounded bg-white dark:bg-gray-700 dark:text-white"
+          rows="4"
+        />
       </div>
       <button
         onClick={handleSubmit}
