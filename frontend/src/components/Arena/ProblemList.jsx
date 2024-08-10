@@ -18,6 +18,7 @@ function ProblemsList({ onProblemSelect }) {
     fetchProblems();
   }, []);
 
+
   const handleProblemClick = (problem) => {
     setSelectedProblem(problem.id);
     onProblemSelect(problem);

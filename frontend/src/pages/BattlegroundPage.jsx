@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ContestDetails from '../components/Battleground/ContestDetails';
 import ContestList from '../components/Battleground/ContestList';
-import Leaderboard from '../components/Battleground/LeaderBoard';
 
 function BattlegroundPage() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -30,7 +29,6 @@ function BattlegroundPage() {
         </div>
         <ContestList />
       </div>
-
       {/* Main content */}
       <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "lg:ml-64" : "ml-0"}`}>
         <header className="bg-white dark:bg-gray-800 shadow-sm">
@@ -50,11 +48,11 @@ function BattlegroundPage() {
             </div>
           </div>
         </header>
+
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <ContestDetails />
-          <Leaderboard />
         </main>
-      </div>
+    </div>
     </div>
   );
 }
