@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-function ProblemSubmission() {
-  const [code, setCode] = useState('')
+function ProblemsSubmission() {
+  const [code, setCode] = useState("");
 
   return (
     <div className="mt-8">
@@ -16,7 +16,7 @@ function ProblemSubmission() {
         Submit
       </button>
     </div>
-  )
+  );
 }
 
-export default ProblemSubmission
+export default ProblemsSubmission;
