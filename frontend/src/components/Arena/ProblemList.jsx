@@ -9,21 +9,6 @@ function ProblemsList({ onProblemSelect }) {
     { id: 3, title: "Longest Substring Without Repeating Characters", difficulty: "Medium" },
     { id: 4, title: "Median of Two Sorted Arrays", difficulty: "Hard" },
     { id: 5, title: "Longest Palindromic Substring", difficulty: "Medium" },
-    { id: 6, title: "ZigZag Conversion", difficulty: "Medium" },
-    { id: 7, title: "Reverse Integer", difficulty: "Medium" },
-    { id: 8, title: "String to Integer (atoi)", difficulty: "Medium" },
-    { id: 9, title: "Palindrome Number", difficulty: "Easy" },
-    { id: 10, title: "Regular Expression Matching", difficulty: "Hard" },
-    { id: 11, title: "Container With Most Water", difficulty: "Medium" },
-    { id: 12, title: "Integer to Roman", difficulty: "Medium" },
-    { id: 13, title: "Roman to Integer", difficulty: "Easy" },
-    { id: 14, title: "Longest Common Prefix", difficulty: "Easy" },
-    { id: 15, title: "3Sum", difficulty: "Medium" },
-    { id: 16, title: "3Sum Closest", difficulty: "Medium" },
-    { id: 17, title: "Letter Combinations of a Phone Number", difficulty: "Medium" },
-    { id: 18, title: "4Sum", difficulty: "Medium" },
-    { id: 19, title: "Remove Nth Node From End of List", difficulty: "Medium" },
-    { id: 20, title: "Valid Parentheses", difficulty: "Easy" },
   ];
 
   const handleProblemClick = (problem) => {
