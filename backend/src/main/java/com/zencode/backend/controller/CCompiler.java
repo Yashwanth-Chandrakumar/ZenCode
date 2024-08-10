@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -19,17 +20,19 @@ import java.lang.management.MemoryUsage;
 public class CCompiler {
 
     @PostMapping("/c/compile")
-    public ResponseEntity<String> compileCode(@RequestBody CodeRequest codeRequest) {
+    public ResponseEntity<CompileResponse> compileCode(@RequestBody CodeRequest codeRequest) {
         try {
             String code = codeRequest.getCode();
+            String userInput = codeRequest.getInput();
+
             File tempFile = File.createTempFile("code", ".c");
-            FileWriter writer = new FileWriter(tempFile);
-            writer.write(code);
-            writer.close();
+            try (FileWriter writer = new FileWriter(tempFile)) {
+                writer.write(code);
+            }
 
             long startTime = System.currentTimeMillis();
-            ProcessBuilder builder = new ProcessBuilder("gcc", tempFile.getAbsolutePath(), "-o", "output");
-            Process compileProcess = builder.start();
+            ProcessBuilder compileBuilder = new ProcessBuilder("gcc", tempFile.getAbsolutePath(), "-o", "output");
+            Process compileProcess = compileBuilder.start();
             compileProcess.waitFor();
             long compileTime = System.currentTimeMillis() - startTime;
 
@@ -41,17 +44,27 @@ public class CCompiler {
             }
 
             if (errors.length() > 0) {
-                return ResponseEntity.ok("Compilation errors:\n" + errors.toString());
+                return ResponseEntity.ok(new CompileResponse("Compilation errors:\n" + errors.toString()));
             } else {
                 startTime = System.currentTimeMillis();
                 ProcessBuilder runBuilder = new ProcessBuilder("./output");
                 Process runProcess = runBuilder.start();
+
+                // Write user input to the C process
+                if (userInput != null && !userInput.isEmpty()) {
+                    try (OutputStreamWriter inputWriter = new OutputStreamWriter(runProcess.getOutputStream())) {
+                        inputWriter.write(userInput);
+                        inputWriter.flush();
+                    }
+                }
+
                 runProcess.waitFor();
                 long executionTime = System.currentTimeMillis() - startTime;
 
                 MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
                 MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
                 long memoryUsed = heapUsage.getUsed();
+                double memoryUsedMB = memoryUsed / (1024.0 * 1024);
 
                 BufferedReader outputReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
                 StringBuilder output = new StringBuilder();
@@ -59,18 +72,16 @@ public class CCompiler {
                     output.append(line).append("\n");
                 }
 
-                return ResponseEntity.ok("Output:\n" + output.toString() +
-                        "Compilation time: " + compileTime + " ms\n" +
-                        "Execution time: " + executionTime + " ms\n" +
-                        "Memory used: " + (memoryUsed / (1024 * 1024)) + " MB\n");
+                return ResponseEntity.ok(new CompileResponse(output.toString(), compileTime, executionTime, memoryUsedMB));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Compilation failed: " + e.getMessage());
+            return ResponseEntity.status(500).body(new CompileResponse("Compilation failed: " + e.getMessage()));
         }
     }
 
     public static class CodeRequest {
         private String code;
+        private String input;
 
         public String getCode() {
             return code;
@@ -78,6 +89,64 @@ public class CCompiler {
 
         public void setCode(String code) {
             this.code = code;
+        }
+
+        public String getInput() {
+            return input;
+        }
+
+        public void setInput(String input) {
+            this.input = input;
+        }
+    }
+
+    public static class CompileResponse {
+        private String data;
+        private long compileTime;
+        private long executionTime;
+        private double memoryUsed;
+
+        public CompileResponse(String data) {
+            this.data = data;
+        }
+
+        public CompileResponse(String data, long compileTime, long executionTime, double memoryUsed) {
+            this.data = data;
+            this.compileTime = compileTime;
+            this.executionTime = executionTime;
+            this.memoryUsed = memoryUsed;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public long getCompileTime() {
+            return compileTime;
+        }
+
+        public void setCompileTime(long compileTime) {
+            this.compileTime = compileTime;
+        }
+
+        public long getExecutionTime() {
+            return executionTime;
+        }
+
+        public void setExecutionTime(long executionTime) {
+            this.executionTime = executionTime;
+        }
+
+        public double getMemoryUsed() {
+            return memoryUsed;
+        }
+
+        public void setMemoryUsed(double memoryUsed) {
+            this.memoryUsed = memoryUsed;
         }
     }
 }

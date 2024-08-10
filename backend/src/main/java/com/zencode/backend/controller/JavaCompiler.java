@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -20,19 +21,20 @@ import java.text.DecimalFormat;
 public class JavaCompiler {
 
     @PostMapping("/java/compile")
-    public ResponseEntity<String> compileAndRunJavaCode(@RequestBody CodeRequest codeRequest) {
+    public ResponseEntity<CompileResponse> compileAndRunJavaCode(@RequestBody CodeRequest codeRequest) {
         try {
             String code = codeRequest.getCode();
-            String className = extractClassName(code);
+            String userInput = codeRequest.getInput();
 
+            String className = extractClassName(code);
             if (className == null) {
-                return ResponseEntity.badRequest().body("Invalid Java code: class name not found.");
+                return ResponseEntity.badRequest().body(new CompileResponse("Invalid Java code: class name not found."));
             }
 
             File tempFile = new File(System.getProperty("java.io.tmpdir"), className + ".java");
-            FileWriter writer = new FileWriter(tempFile);
-            writer.write(code);
-            writer.close();
+            try (FileWriter writer = new FileWriter(tempFile)) {
+                writer.write(code);
+            }
 
             long startTime = System.currentTimeMillis();
             ProcessBuilder compileBuilder = new ProcessBuilder("javac", tempFile.getAbsolutePath());
@@ -48,11 +50,20 @@ public class JavaCompiler {
             }
 
             if (errors.length() > 0) {
-                return ResponseEntity.ok("Compilation errors:\n" + errors.toString());
+                return ResponseEntity.ok(new CompileResponse("Compilation errors:\n" + errors.toString()));
             } else {
                 startTime = System.currentTimeMillis();
                 ProcessBuilder runBuilder = new ProcessBuilder("java", "-cp", tempFile.getParent(), className);
                 Process runProcess = runBuilder.start();
+
+                // Write user input to the Java process
+                if (userInput != null && !userInput.isEmpty()) {
+                    try (OutputStreamWriter inputWriter = new OutputStreamWriter(runProcess.getOutputStream())) {
+                        inputWriter.write(userInput);
+                        inputWriter.flush();
+                    }
+                }
+
                 runProcess.waitFor();
                 long executionTime = System.currentTimeMillis() - startTime;
 
@@ -67,14 +78,10 @@ public class JavaCompiler {
                     output.append(line).append("\n");
                 }
 
-                DecimalFormat df = new DecimalFormat("#.00");
-                return ResponseEntity.ok("Output:\n" + output.toString() +
-                        "Compilation time: " + compileTime + " ms\n" +
-                        "Execution time: " + executionTime + " ms\n" +
-                        "Memory used: " + df.format(memoryUsedMB) + " MB\n");
+                return ResponseEntity.ok(new CompileResponse(output.toString(), compileTime, executionTime, memoryUsedMB));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Compilation or execution failed: " + e.getMessage());
+            return ResponseEntity.status(500).body(new CompileResponse("Compilation or execution failed: " + e.getMessage()));
         }
     }
 
@@ -100,6 +107,7 @@ public class JavaCompiler {
 
     public static class CodeRequest {
         private String code;
+        private String input;
 
         public String getCode() {
             return code;
@@ -107,6 +115,64 @@ public class JavaCompiler {
 
         public void setCode(String code) {
             this.code = code;
+        }
+
+        public String getInput() {
+            return input;
+        }
+
+        public void setInput(String input) {
+            this.input = input;
+        }
+    }
+
+    public static class CompileResponse {
+        private String data;
+        private long compileTime;
+        private long executionTime;
+        private double memoryUsed;
+
+        public CompileResponse(String data) {
+            this.data = data;
+        }
+
+        public CompileResponse(String data, long compileTime, long executionTime, double memoryUsed) {
+            this.data = data;
+            this.compileTime = compileTime;
+            this.executionTime = executionTime;
+            this.memoryUsed = memoryUsed;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public long getCompileTime() {
+            return compileTime;
+        }
+
+        public void setCompileTime(long compileTime) {
+            this.compileTime = compileTime;
+        }
+
+        public long getExecutionTime() {
+            return executionTime;
+        }
+
+        public void setExecutionTime(long executionTime) {
+            this.executionTime = executionTime;
+        }
+
+        public double getMemoryUsed() {
+            return memoryUsed;
+        }
+
+        public void setMemoryUsed(double memoryUsed) {
+            this.memoryUsed = memoryUsed;
         }
     }
 }
