@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom'
 
 function Navbar({ darkMode, setDarkMode }) {
   return (
-    <nav className="flex items-center justify-center space-x-8 z-50">
+    <nav className="flex items-center justify-center space-x-4 sm:space-x-8 z-50">
       <Link to="/playground" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-        <FaCode className="mr-2" />
-        <span>Playground</span>
+        <FaCode className="text-xl sm:mr-2" />
+        <span className="hidden sm:inline">Playground</span>
       </Link>
       <Link to="/arena" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-        <FaTrophy className="mr-2" />
-        <span>Arena</span>
+        <FaTrophy className="text-xl sm:mr-2" />
+        <span className="hidden sm:inline">Arena</span>
       </Link>
       <Link to="/battleground" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-        <FaFlagCheckered className="mr-2" />
-        <span>Battleground</span>
+        <FaFlagCheckered className="text-xl sm:mr-2" />
+        <span className="hidden sm:inline">Battleground</span>
       </Link>
       <button
         onClick={() => setDarkMode(!darkMode)}
