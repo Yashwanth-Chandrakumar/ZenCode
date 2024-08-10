@@ -8,7 +8,7 @@ function ProblemsList({ onProblemSelect }) {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const response = await axios.get("http://100.26.207.44:8080/api/problems"); // Replace with your backend endpoint
+        const response = await axios.get("http://100.26.207.44:8080/api/problems");
         setProblems(response.data);
       } catch (error) {
         console.error("Error fetching problems:", error);
