@@ -1,10 +1,10 @@
 import React from 'react'
+import { FaCode, FaFlagCheckered, FaTrophy } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
-import { FaCode, FaTrophy, FaFlagCheckered } from 'react-icons/fa'
 
 function Navbar({ darkMode, setDarkMode }) {
   return (
-    <nav className="flex items-center justify-center space-x-8">
+    <nav className="flex items-center justify-center space-x-8 z-50">
       <Link to="/playground" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
         <FaCode className="mr-2" />
         <span>Playground</span>
