@@ -4,9 +4,8 @@ function ProblemsDetails({ problem }) {
   if (!problem) {
     return <div className="w-full p-4">Select a problem to see its details.</div>;
   }
-
   const { title, description, testCases } = problem;
-  const testcases = testCases.slice(0, 2); // Display only the first two test cases
+  const testcases = testCases.slice(0, 2);
 
   return (
     <div className="w-full p-4">
