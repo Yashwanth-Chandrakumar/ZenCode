@@ -27,7 +27,7 @@ int main() {
 
   const [language, setLanguage] = useState("cpp");
   const [code, setCode] = useState(cppDefault);
-  const [input, setInput] = useState("");  // New state for custom input
+  const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [compilationTime, setCompilationTime] = useState("");
   const [executionTime, setExecutionTime] = useState("");
@@ -104,6 +104,37 @@ int main() {
       setCode(newCode);
       setTimeout(() => {
         e.target.selectionStart = e.target.selectionEnd = start + 4;
+      }, 0);
+    } else if (["(", "{", "[", '"', "'"].includes(e.key)) {
+      e.preventDefault();
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      let closingBracket = "";
+      switch (e.key) {
+        case "(":
+          closingBracket = ")";
+          break;
+        case "{":
+          closingBracket = "}";
+          break;
+        case "[":
+          closingBracket = "]";
+          break;
+        case '"':
+          closingBracket = '"';
+          break;
+        case "'":
+          closingBracket = "'";
+          break;
+        default:
+          break;
+      }
+
+      const newCode = code.substring(0, start) + e.key + closingBracket + code.substring(end);
+      setCode(newCode);
+
+      setTimeout(() => {
+        e.target.selectionStart = e.target.selectionEnd = start + 1;
       }, 0);
     }
   };
@@ -232,28 +263,38 @@ int main() {
           value={input}
           onChange={handleInputChange}
           className="w-full px-2 py-1 border rounded bg-white dark:bg-gray-700 dark:text-white"
-          rows="4"
+          rows={3}
         />
       </div>
       <button
         onClick={handleSubmit}
-        className="mt-4 px-4 py-2 rounded bg-blue-600 text-white hover:opacity-80 dark:bg-blue-500"
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
         Run Code
       </button>
-      <h2 className="text-xl font-semibold mt-6 mb-2 text-black dark:text-white">
-        Output:
-      </h2>
-      <pre className="p-4 rounded overflow-auto bg-gray-100 dark:bg-gray-800 dark:text-white text-black">
-        {output}
-      </pre>
-      {compilationTime && (
-        <div className="mt-2">
-          <p className="text-black dark:text-white">Compilation Time: {compilationTime} ms</p>
-          <p className="text-black dark:text-white">Execution Time: {executionTime} ms</p>
-          <p className="text-black dark:text-white">Memory Used: {memoryUsed} KB</p>
-        </div>
-      )}
+      <div className="mt-4">
+        <h2 className="text-xl font-bold mb-2 text-black dark:text-white">
+          Output:
+        </h2>
+        <pre className="p-2 bg-gray-200 dark:bg-gray-800 dark:text-white rounded">
+          {output}
+        </pre>
+        {compilationTime && (
+          <p className="text-sm text-black dark:text-white">
+            Compilation Time: {compilationTime} ms
+          </p>
+        )}
+        {executionTime && (
+          <p className="text-sm text-black dark:text-white">
+            Execution Time: {executionTime} ms
+          </p>
+        )}
+        {memoryUsed && (
+          <p className="text-sm text-black dark:text-white">
+            Memory Used: {memoryUsed} KB
+          </p>
+        )}
+      </div>
     </div>
   );
 }
