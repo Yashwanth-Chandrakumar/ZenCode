@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+
 function Editor() {
   const cppDefault = `#include <iostream>
 using namespace std;
@@ -15,17 +16,58 @@ int main() {
     }
 }`;
 
+  const pythonDefault = `print("Hello, World!")`;
+
+  const cDefault = `#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\\n");
+    return 0;
+}`;
+
   const [language, setLanguage] = useState("cpp");
   const [code, setCode] = useState(cppDefault);
   const [output, setOutput] = useState("");
   const editorRef = useRef(null);
 
   useEffect(() => {
-    setCode(language === "cpp" ? cppDefault : javaDefault);
+    switch (language) {
+      case "cpp":
+        setCode(cppDefault);
+        break;
+      case "java":
+        setCode(javaDefault);
+        break;
+      case "python":
+        setCode(pythonDefault);
+        break;
+      case "c":
+        setCode(cDefault);
+        break;
+      default:
+        setCode(cppDefault);
+    }
   }, [language]);
 
   const handleSubmit = async () => {
-    const endpoint = language === "cpp" ? "cpp/compile" : "java/compile";
+    let endpoint = "";
+    switch (language) {
+      case "cpp":
+        endpoint = "cpp/compile";
+        break;
+      case "java":
+        endpoint = "java/compile";
+        break;
+      case "python":
+        endpoint = "python/compile";
+        break;
+      case "c":
+        endpoint = "c/compile";
+        break;
+      default:
+        endpoint = "cpp/compile";
+    }
+
     try {
       const response = await axios.post(
         `http://98.80.68.135:8080/${endpoint}`,
@@ -33,6 +75,7 @@ int main() {
           code,
         }
       );
+
       console.log(response);
       setOutput(response.data);
     } catch (error) {
@@ -68,7 +111,6 @@ int main() {
 
   const syntaxHighlight = (code) => {
     let highlightedCode = escapeHtml(code)
-      // .replace(/(\/\/.*$)/gm, '<span class="text-green-600">$1</span>') // single-line comments
       .replace(/\/\*[\s\S]*?\*\//g, '<span class="text-green-600">$&</span>') // multi-line comments
       .replace(
         /("(?:[^"\\]|\\.)*")/g,
@@ -91,6 +133,7 @@ int main() {
 
     return highlightedCode;
   };
+
   const lineNumbersRef = useRef(null);
   const editorWrapperRef = useRef(null);
   const highlightedCodeRef = useRef(null);
@@ -135,6 +178,8 @@ int main() {
         >
           <option value="cpp">C++</option>
           <option value="java">Java</option>
+          <option value="python">Python</option>
+          <option value="c">C</option>
         </select>
       </div>
       <div
