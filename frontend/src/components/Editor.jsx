@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+
 function Editor() {
   const cppDefault = `#include <iostream>
 using namespace std;
@@ -15,28 +16,82 @@ int main() {
     }
 }`;
 
+  const pythonDefault = `print("Hello, World!")`;
+
+  const cDefault = `#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\\n");
+    return 0;
+}`;
+
   const [language, setLanguage] = useState("cpp");
   const [code, setCode] = useState(cppDefault);
+  const [input, setInput] = useState("");  // New state for custom input
   const [output, setOutput] = useState("");
+  const [compilationTime, setCompilationTime] = useState("");
+  const [executionTime, setExecutionTime] = useState("");
+  const [memoryUsed, setMemoryUsed] = useState("");
   const editorRef = useRef(null);
 
   useEffect(() => {
-    setCode(language === "cpp" ? cppDefault : javaDefault);
+    switch (language) {
+      case "cpp":
+        setCode(cppDefault);
+        break;
+      case "java":
+        setCode(javaDefault);
+        break;
+      case "python":
+        setCode(pythonDefault);
+        break;
+      case "c":
+        setCode(cDefault);
+        break;
+      default:
+        setCode(cppDefault);
+    }
   }, [language]);
 
   const handleSubmit = async () => {
-    const endpoint = language === "cpp" ? "cpp/compile" : "java/compile";
+    let endpoint = "";
+    switch (language) {
+      case "cpp":
+        endpoint = "cpp/compile";
+        break;
+      case "java":
+        endpoint = "java/compile";
+        break;
+      case "python":
+        endpoint = "python/compile";
+        break;
+      case "c":
+        endpoint = "c/compile";
+        break;
+      default:
+        endpoint = "cpp/compile";
+    }
+
     try {
+      console.log(input)
       const response = await axios.post(
-        `http://98.80.68.135:8080/${endpoint}`,
+        `http://100.26.207.44:8080/${endpoint}`,
         {
           code,
+          input,
         }
       );
+
       console.log(response);
-      setOutput(response.data);
+      setOutput(response.data.output);
+      setCompilationTime(response.data.compilationTime);
+      setExecutionTime(response.data.executionTime);
+      setMemoryUsed(response.data.memoryUsed);
     } catch (error) {
       setOutput("Error: " + error.message);
+      setCompilationTime("");
+      setExecutionTime("");
+      setMemoryUsed("");
     }
   };
 
@@ -57,6 +112,10 @@ int main() {
     setCode(e.target.value);
   };
 
+  const handleInputChange = (e) => {  
+    setInput(e.target.value);
+  };
+
   const escapeHtml = (unsafe) => {
     return unsafe
       .replace(/&/g, "&amp;")
@@ -68,29 +127,28 @@ int main() {
 
   const syntaxHighlight = (code) => {
     let highlightedCode = escapeHtml(code)
-      // .replace(/(\/\/.*$)/gm, '<span class="text-green-600">$1</span>') // single-line comments
-      .replace(/\/\*[\s\S]*?\*\//g, '<span class="text-green-600">$&</span>') // multi-line comments
       .replace(
         /("(?:[^"\\]|\\.)*")/g,
         '<span class="text-yellow-500">$1</span>'
-      ) // strings
+      ) 
       .replace(
         /\b(vector|int|float|double|char|string|String|bool|void|if|else|for|while|return|public|private|class|static|const)\b/g,
         '<span class="text-blue-500">$1</span>'
-      ) // keywords
+      ) 
       .replace(
         /(#include|#define|using namespace std)/g,
         '<span class="text-purple-500">$1</span>'
-      ) // preprocessor directives
-      .replace(/(import)/g, '<span class="text-purple-500">$1</span>') // preprocessor directives
-      .replace(/(endl|cout|cin)/g, '<span class="text-green-600">$1</span>') // preprocessor directives
+      ) 
+      .replace(/(import)/g, '<span class="text-purple-500">$1</span>') 
+      .replace(/(endl|cout|cin|input)/g, '<span class="text-green-600">$1</span>') 
       .replace(
-        /(System.out.println|System.out.print)/g,
+        /(System.out.println|System.out.print|printf|print)/g,
         '<span class="text-red-500">$1</span>'
-      ); // preprocessor directives
+      ); 
 
     return highlightedCode;
   };
+
   const lineNumbersRef = useRef(null);
   const editorWrapperRef = useRef(null);
   const highlightedCodeRef = useRef(null);
@@ -135,6 +193,8 @@ int main() {
         >
           <option value="cpp">C++</option>
           <option value="java">Java</option>
+          <option value="python">Python</option>
+          <option value="c">C</option>
         </select>
       </div>
       <div
@@ -166,6 +226,15 @@ int main() {
           />
         </div>
       </div>
+      <div className="mt-4">
+        <label className="mr-2 text-black dark:text-white">Custom Input:</label>
+        <textarea
+          value={input}
+          onChange={handleInputChange}
+          className="w-full px-2 py-1 border rounded bg-white dark:bg-gray-700 dark:text-white"
+          rows="4"
+        />
+      </div>
       <button
         onClick={handleSubmit}
         className="mt-4 px-4 py-2 rounded bg-blue-600 text-white hover:opacity-80 dark:bg-blue-500"
@@ -178,6 +247,13 @@ int main() {
       <pre className="p-4 rounded overflow-auto bg-gray-100 dark:bg-gray-800 dark:text-white text-black">
         {output}
       </pre>
+      {compilationTime && (
+        <div className="mt-2">
+          <p className="text-black dark:text-white">Compilation Time: {compilationTime} ms</p>
+          <p className="text-black dark:text-white">Execution Time: {executionTime} ms</p>
+          <p className="text-black dark:text-white">Memory Used: {memoryUsed} KB</p>
+        </div>
+      )}
     </div>
   );
 }
