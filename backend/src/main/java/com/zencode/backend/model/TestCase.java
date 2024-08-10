@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -22,8 +23,11 @@ public class TestCase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long problem_id;
+
+    @ManyToOne
+    @JoinColumn(name = "problem_id", nullable = false)
+    private Problems problem;
+
     private String testcases;
     private String answers;
-
 }
