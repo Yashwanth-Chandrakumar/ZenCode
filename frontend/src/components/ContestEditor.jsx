@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 
-function ArenaEditor({ problem }) {
+function ContestEditor({ problem, contestId, updateScore }) {
   const cppDefault = `#include <iostream>
 using namespace std;
 
@@ -133,27 +133,41 @@ useEffect(() => {
 
   const handleRunCode = async () => {
     if (!problem || !problem.testCases) {
-      setOutput("No test cases available");
-      return;
-    }
-    const visibleTestCases = problem.testCases.slice(0, 2);
-    const results = await runCode(visibleTestCases);
-    setTestResults(results);
+        setOutput("No test cases available");
+        return;
+      }
+      const visibleTestCases = problem.testCases.slice(0, 2);
+      const results = await runCode(visibleTestCases);
+      setTestResults(results);
+    
   };
+  const [submittedQuestions, setSubmittedQuestions] = useState(new Set());
 
   const handleSubmitCode = async () => {
     if (!problem || !problem.testCases) {
-      setOutput("No test cases available");
-      return;
-    }
-    const allTestCases = problem.testCases;
-    const results = await runCode(allTestCases);
-    const passedCount = results.filter(result => result.passed).length;
-    setSubmissionResults({
-      totalTests: allTestCases.length,
-      passedTests: passedCount,
-      results: results,
-    });
+        setOutput("No test cases available");
+        return;
+      }
+      const allTestCases = problem.testCases;
+      const results = await runCode(allTestCases);
+      const passedCount = results.filter(result => result.passed).length;
+      
+      // Calculate score based on passed test cases
+      const totalTests = allTestCases.length;
+      const scoreForThisQuestion = Math.round((passedCount / totalTests)*10 );
+      
+      setSubmissionResults({
+        totalTests: totalTests,
+        passedTests: passedCount,
+        results: results,
+        score: scoreForThisQuestion
+      });
+    
+      // Update the score only if it hasn't been submitted before
+      if (!submittedQuestions.has(problem.id)) {
+        updateScore(scoreForThisQuestion);
+        setSubmittedQuestions(prev => new Set(prev).add(problem.id));
+      }
   };
 
   const handleKeyDown = (e) => {
@@ -253,7 +267,7 @@ useEffect(() => {
       .map((_, i) => `<div>${i + 1}</div>`)
       .join("");
     lineNumbersRef.current.innerHTML = lineNumbers;
-  };
+};
 
   useEffect(() => {
     const highlighted = syntaxHighlight(code);
@@ -331,12 +345,20 @@ useEffect(() => {
           Run Code
         </button>
         <button
-          onClick={handleSubmitCode}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          Submit Code
-        </button>
+  onClick={handleSubmitCode}
+//   disabled={submittedQuestions.has(problem.id)}
+  className={`px-4 py-2 text-white rounded ${
+    submittedQuestions.has(problem.id)
+      ? 'bg-gray-400'
+      : 'bg-green-500 hover:bg-green-600'
+  }`}
+>
+  Submit Code
+</button>
       </div>
+      <div className="text-lg font-semibold">
+    Score: {submissionResults ? submissionResults.score : 0} / {submissionResults ? submissionResults.totalTests : 0}
+  </div>
       <div className="mt-4">
         <h2 className="text-xl font-bold mb-2 text-black dark:text-white">
           Results:
@@ -439,4 +461,4 @@ useEffect(() => {
   );
 }
 
-export default ArenaEditor;
+export default ContestEditor;

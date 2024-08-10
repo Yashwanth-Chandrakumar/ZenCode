@@ -288,7 +288,7 @@ int main() {
         )}
         {memoryUsed && (
           <p className="text-sm text-black dark:text-white">
-            Memory Used: {memoryUsed} KB
+            Memory Used: {memoryUsed} MB
           </p>
         )}
       </div>
