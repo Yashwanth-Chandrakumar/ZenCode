@@ -1,6 +1,6 @@
 import React from 'react'
-import ProblemList from '../components/Arena/ProblemList'
 import ProblemDetails from '../components/Arena/ProblemDetails'
+import ProblemList from '../components/Arena/ProblemList'
 
 function ArenaPage() {
   return (
