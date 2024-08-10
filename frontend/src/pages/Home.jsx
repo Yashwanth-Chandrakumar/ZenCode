@@ -6,7 +6,7 @@ function Home() {
   const [code, setCode] = useState('');
   const [currentLine, setCurrentLine] = useState(0);
   const [showError, setShowError] = useState(false);
-  const [showSolution, setShowSolution] = useState(false);
+  const [isErasing, setIsErasing] = useState(false);
 
   const codeLines = [
     'function calculateFactorial(n) {',
@@ -20,70 +20,85 @@ function Home() {
     'console.log(calculateFactorial(-1));  // Error!'
   ];
 
+  const errorLine = 'console.log(calculateFactorial(-1));  // Error!';
+  const correctedLine = 'if (n < 0) return "Error: n should be non-negative";';
+
   useEffect(() => {
-    if (currentLine < codeLines.length) {
-      const timer = setTimeout(() => {
+    const timer = setTimeout(() => {
+      if (!isErasing && currentLine < codeLines.length) {
         setCode(prevCode => prevCode + codeLines[currentLine] + '\n');
         setCurrentLine(prevLine => prevLine + 1);
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    } else if (currentLine === codeLines.length) {
-      const errorTimer = setTimeout(() => {
+      } else if (currentLine === codeLines.length && !showError) {
         setShowError(true);
-      }, 2000);
+        setTimeout(() => {
+          setIsErasing(true);
+        }, 2000);
+      } else if (isErasing) {
+        if (code.includes(errorLine)) {
+          setCode(prevCode => prevCode.slice(0, prevCode.lastIndexOf(errorLine)));
+        } else {
+          setIsErasing(false);
+          setCode(prevCode => prevCode + correctedLine + '\n');
+          setTimeout(() => {
+            setCurrentLine(0);
+            setCode('');
+            setShowError(false);
+          }, 3000);
+        }
+      }
+    }, isErasing ? 50 : 1000);
 
-      return () => clearTimeout(errorTimer);
-    }
-  }, [currentLine]);
-
-  const handleSolveError = () => {
-    setCode(prevCode => prevCode.replace(
-      'console.log(calculateFactorial(-1));  // Error!',
-      'if (n < 0) return "Error: n should be non-negative";'
-    ));
-    setShowError(false);
-    setShowSolution(true);
-  };
+    return () => clearTimeout(timer);
+  }, [currentLine, showError, isErasing, code]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <main className="flex-grow p-4">
-        <h1 className="text-4xl font-bold mb-8 text-center">Experience Coding with Zencode</h1>
+        <h1 className="text-5xl font-bold mb-8 text-center text-blue-600 dark:text-blue-400">Welcome to Zencode</h1>
         
-        <div className="bg-gray-900 p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-          <pre className="text-green-400 font-mono whitespace-pre-wrap">
-            {code}
-          </pre>
-        </div>
-
-        {showError && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-red-500 text-white p-4 rounded-lg mt-4 max-w-4xl mx-auto"
-          >
-            <p>Error: Factorial is not defined for negative numbers!</p>
-            <button 
-              onClick={handleSolveError}
-              className="mt-2 bg-white text-red-500 px-4 py-2 rounded"
+        <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
+          <div className="flex-1">
+            <h2 className="text-2xl font-semibold mb-4">Experience Real-Time Coding</h2>
+            <div className="bg-gray-800 dark:bg-gray-900 p-6 rounded-lg shadow-lg h-96 overflow-auto">
+              <pre className="text-green-400 font-mono whitespace-pre-wrap">
+                {code}
+              </pre>
+            </div>
+          </div>
+          
+          <div className="flex-1 space-y-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
             >
-              Solve Error
-            </button>
-          </motion.div>
-        )}
-
-        {showSolution && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-green-500 text-white p-4 rounded-lg mt-4 max-w-4xl mx-auto"
-          >
-            <p>Great job! You've successfully handled the error case.</p>
-          </motion.div>
-        )}
+              <h2 className="text-2xl font-semibold mb-2">Why Choose Zencode?</h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>Interactive coding environment</li>
+                <li>Real-time feedback and error checking</li>
+                <li>Wide range of programming challenges</li>
+                <li>Community-driven learning experience</li>
+              </ul>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+            >
+              <h2 className="text-2xl font-semibold mb-2">Features</h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>Code playground for experimenting</li>
+                <li>Algorithmic challenges to test your skills</li>
+                <li>Competitive coding arena</li>
+                <li>Comprehensive learning resources</li>
+              </ul>
+            </motion.div>
+          </div>
+        </div>
       </main>
-
       <Footer />
     </div>
   );
