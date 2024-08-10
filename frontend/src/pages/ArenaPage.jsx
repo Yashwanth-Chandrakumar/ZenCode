@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProblemsDetails from "../components/Arena/ProblemDetails";
 import ProblemsList from "../components/Arena/ProblemList";
-import Editor from "../components/Editor";
+import ArenaEditor from "../components/ArenaEditor";
 
 function ArenaPage() {
   const [selectedProblem, setSelectedProblem] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-
-  useEffect(() => {
-    setSelectedProblem({
-      id: 1,
-      title: "Two Sum",
-      difficulty: "Easy"
-    });
-  }, []);
 
   const handleProblemSelect = (problem) => {
     setSelectedProblem(problem);
@@ -51,7 +43,7 @@ function ArenaPage() {
         </div>
         <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <ProblemsDetails problem={selectedProblem} />
-          <Editor />
+          <ArenaEditor problem={selectedProblem} />
         </div>
       </div>
     </div>
