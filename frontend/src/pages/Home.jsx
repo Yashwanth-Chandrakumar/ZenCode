@@ -1,32 +1,104 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FaCode, FaTrophy, FaFlagCheckered } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
 import Footer from "../components/Footer";
+import { motion } from 'framer-motion';
 
 function Home() {
+  const [code, setCode] = useState('');
+  const [currentLine, setCurrentLine] = useState(0);
+  const [showError, setShowError] = useState(false);
+  const [isErasing, setIsErasing] = useState(false);
+
+  const codeLines = [
+    'function calculateFactorial(n) {',
+    '  if (n === 0 || n === 1) {',
+    '    return 1;',
+    '  }',
+    '  return n * calculateFactorial(n - 1);',
+    '}',
+    '',
+    'console.log(calculateFactorial(5));',
+    'console.log(calculateFactorial(-1));  // Error!'
+  ];
+
+  const errorLine = 'console.log(calculateFactorial(-1));  // Error!';
+  const correctedLine = 'if (n < 0) return "Error: n should be non-negative";';
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isErasing && currentLine < codeLines.length) {
+        setCode(prevCode => prevCode + codeLines[currentLine] + '\n');
+        setCurrentLine(prevLine => prevLine + 1);
+      } else if (currentLine === codeLines.length && !showError) {
+        setShowError(true);
+        setTimeout(() => {
+          setIsErasing(true);
+        }, 2000);
+      } else if (isErasing) {
+        if (code.includes(errorLine)) {
+          setCode(prevCode => prevCode.slice(0, prevCode.lastIndexOf(errorLine)));
+        } else {
+          setIsErasing(false);
+          setCode(prevCode => prevCode + correctedLine + '\n');
+          setTimeout(() => {
+            setCurrentLine(0);
+            setCode('');
+            setShowError(false);
+          }, 3000);
+        }
+      }
+    }, isErasing ? 50 : 1000);
+
+    return () => clearTimeout(timer);
+  }, [currentLine, showError, isErasing, code]);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="container mx-auto px-4 py-12 flex-grow">
-        <h1 className="text-4xl font-bold mb-8 text-center font-dyslexic">Welcome to Zencode</h1>
-        <p className="text-xl text-center mb-12 font-dyslexic">Elevate your coding skills with challenges, competitions, and a supportive community.</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Link to="/playground" className="flex flex-col items-center p-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <FaCode className="text-6xl mb-4 text-blue-500" />
-            <h2 className="text-2xl font-semibold mb-2 font-dyslexic">Playground</h2>
-            <p className="text-center text-gray-600 dark:text-gray-400 font-dyslexic">Practice coding in a sandbox environment.</p>
-          </Link>
-          <Link to="/arena" className="flex flex-col items-center p-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <FaTrophy className="text-6xl mb-4 text-yellow-500" />
-            <h2 className="text-2xl font-semibold mb-2 font-dyslexic">Arena</h2>
-            <p className="text-center text-gray-600 dark:text-gray-400 font-dyslexic">Solve coding challenges and improve your skills.</p>
-          </Link>
-          <Link to="/battleground" className="flex flex-col items-center p-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <FaFlagCheckered className="text-6xl mb-4 text-green-500" />
-            <h2 className="text-2xl font-semibold mb-2 font-dyslexic">Battleground</h2>
-            <p className="text-center text-gray-600 dark:text-gray-400 font-dyslexic">Compete with others in coding contests.</p>
-          </Link>
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      <main className="flex-grow p-4">
+        <h1 className="text-5xl font-bold mb-8 text-center text-blue-600 dark:text-blue-400">Welcome to Zencode</h1>
+        
+        <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
+          <div className="flex-1">
+            <h2 className="text-2xl font-semibold mb-4">Experience Real-Time Coding</h2>
+            <div className="bg-gray-800 dark:bg-gray-900 p-6 rounded-lg shadow-lg h-96 overflow-auto">
+              <pre className="text-green-400 font-mono whitespace-pre-wrap">
+                {code}
+              </pre>
+            </div>
+          </div>
+          
+          <div className="flex-1 space-y-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+            >
+              <h2 className="text-2xl font-semibold mb-2">Why Choose Zencode?</h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>Interactive coding environment</li>
+                <li>Real-time feedback and error checking</li>
+                <li>Wide range of programming challenges</li>
+                <li>Community-driven learning experience</li>
+              </ul>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+            >
+              <h2 className="text-2xl font-semibold mb-2">Features</h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>Code playground for experimenting</li>
+                <li>Algorithmic challenges to test your skills</li>
+                <li>Competitive coding arena</li>
+                <li>Comprehensive learning resources</li>
+              </ul>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

@@ -40,5 +40,6 @@ public class Problems {
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<TestCase> testCases = new ArrayList<>();
+
 }
 
