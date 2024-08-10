@@ -14,7 +14,6 @@ import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.text.DecimalFormat;
 
 @RestController
 @CrossOrigin("*")
@@ -24,9 +23,8 @@ public class JavaCompiler {
     public ResponseEntity<CompileResponse> compileAndRunJavaCode(@RequestBody CodeRequest codeRequest) {
         try {
             String code = codeRequest.getCode();
-            String userInput = codeRequest.getInput();
-
             String className = extractClassName(code);
+
             if (className == null) {
                 return ResponseEntity.badRequest().body(new CompileResponse("Invalid Java code: class name not found."));
             }
@@ -56,10 +54,9 @@ public class JavaCompiler {
                 ProcessBuilder runBuilder = new ProcessBuilder("java", "-cp", tempFile.getParent(), className);
                 Process runProcess = runBuilder.start();
 
-                // Write user input to the Java process
-                if (userInput != null && !userInput.isEmpty()) {
+                if (codeRequest.getInput() != null && !codeRequest.getInput().isEmpty()) {
                     try (OutputStreamWriter inputWriter = new OutputStreamWriter(runProcess.getOutputStream())) {
-                        inputWriter.write(userInput);
+                        inputWriter.write(codeRequest.getInput());
                         inputWriter.flush();
                     }
                 }
@@ -81,28 +78,20 @@ public class JavaCompiler {
                 return ResponseEntity.ok(new CompileResponse(output.toString(), compileTime, executionTime, memoryUsedMB));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new CompileResponse("Compilation or execution failed: " + e.getMessage()));
+            return ResponseEntity.status(500).body(new CompileResponse("Execution failed: " + e.getMessage()));
         }
     }
 
     private String extractClassName(String code) {
-        String className = null;
-        String[] lines = code.split("\\r?\\n");
+        // Extract class name from the Java code
+        String[] lines = code.split("\\n");
         for (String line : lines) {
             line = line.trim();
             if (line.startsWith("public class ")) {
-                int startIndex = "public class ".length();
-                int endIndex = line.indexOf(" ", startIndex);
-                if (endIndex == -1) {
-                    endIndex = line.indexOf("{", startIndex);
-                }
-                if (endIndex != -1) {
-                    className = line.substring(startIndex, endIndex);
-                }
-                break;
+                return line.split(" ")[2];
             }
         }
-        return className;
+        return null;
     }
 
     public static class CodeRequest {
@@ -126,53 +115,54 @@ public class JavaCompiler {
         }
     }
 
-    public static class CompileResponse {
+    public class CompileResponse {
         private String data;
         private long compileTime;
         private long executionTime;
         private double memoryUsed;
-
+    
         public CompileResponse(String data) {
             this.data = data;
         }
-
+    
         public CompileResponse(String data, long compileTime, long executionTime, double memoryUsed) {
             this.data = data;
             this.compileTime = compileTime;
             this.executionTime = executionTime;
             this.memoryUsed = memoryUsed;
         }
-
+    
         public String getData() {
             return data;
         }
-
+    
         public void setData(String data) {
             this.data = data;
         }
-
+    
         public long getCompileTime() {
             return compileTime;
         }
-
+    
         public void setCompileTime(long compileTime) {
             this.compileTime = compileTime;
         }
-
+    
         public long getExecutionTime() {
             return executionTime;
         }
-
+    
         public void setExecutionTime(long executionTime) {
             this.executionTime = executionTime;
         }
-
+    
         public double getMemoryUsed() {
             return memoryUsed;
         }
-
+    
         public void setMemoryUsed(double memoryUsed) {
             this.memoryUsed = memoryUsed;
         }
     }
+    
 }

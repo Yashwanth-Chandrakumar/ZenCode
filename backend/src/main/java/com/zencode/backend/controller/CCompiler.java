@@ -23,8 +23,6 @@ public class CCompiler {
     public ResponseEntity<CompileResponse> compileCode(@RequestBody CodeRequest codeRequest) {
         try {
             String code = codeRequest.getCode();
-            String userInput = codeRequest.getInput();
-
             File tempFile = File.createTempFile("code", ".c");
             try (FileWriter writer = new FileWriter(tempFile)) {
                 writer.write(code);
@@ -50,10 +48,9 @@ public class CCompiler {
                 ProcessBuilder runBuilder = new ProcessBuilder("./output");
                 Process runProcess = runBuilder.start();
 
-                // Write user input to the C process
-                if (userInput != null && !userInput.isEmpty()) {
+                if (codeRequest.getInput() != null && !codeRequest.getInput().isEmpty()) {
                     try (OutputStreamWriter inputWriter = new OutputStreamWriter(runProcess.getOutputStream())) {
-                        inputWriter.write(userInput);
+                        inputWriter.write(codeRequest.getInput());
                         inputWriter.flush();
                     }
                 }
@@ -75,7 +72,7 @@ public class CCompiler {
                 return ResponseEntity.ok(new CompileResponse(output.toString(), compileTime, executionTime, memoryUsedMB));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new CompileResponse("Compilation failed: " + e.getMessage()));
+            return ResponseEntity.status(500).body(new CompileResponse("Execution failed: " + e.getMessage()));
         }
     }
 
@@ -99,54 +96,54 @@ public class CCompiler {
             this.input = input;
         }
     }
-
-    public static class CompileResponse {
+    public class CompileResponse {
         private String data;
         private long compileTime;
         private long executionTime;
         private double memoryUsed;
-
+    
         public CompileResponse(String data) {
             this.data = data;
         }
-
+    
         public CompileResponse(String data, long compileTime, long executionTime, double memoryUsed) {
             this.data = data;
             this.compileTime = compileTime;
             this.executionTime = executionTime;
             this.memoryUsed = memoryUsed;
         }
-
+    
         public String getData() {
             return data;
         }
-
+    
         public void setData(String data) {
             this.data = data;
         }
-
+    
         public long getCompileTime() {
             return compileTime;
         }
-
+    
         public void setCompileTime(long compileTime) {
             this.compileTime = compileTime;
         }
-
+    
         public long getExecutionTime() {
             return executionTime;
         }
-
+    
         public void setExecutionTime(long executionTime) {
             this.executionTime = executionTime;
         }
-
+    
         public double getMemoryUsed() {
             return memoryUsed;
         }
-
+    
         public void setMemoryUsed(double memoryUsed) {
             this.memoryUsed = memoryUsed;
         }
     }
+    
 }
