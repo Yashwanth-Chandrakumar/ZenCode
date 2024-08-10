@@ -29,6 +29,9 @@ int main() {
   const [code, setCode] = useState(cppDefault);
   const [input, setInput] = useState("");  // New state for custom input
   const [output, setOutput] = useState("");
+  const [compilationTime, setCompilationTime] = useState("");
+  const [executionTime, setExecutionTime] = useState("");
+  const [memoryUsed, setMemoryUsed] = useState("");
   const editorRef = useRef(null);
 
   useEffect(() => {
@@ -80,9 +83,15 @@ int main() {
       );
 
       console.log(response);
-      setOutput(response.data);
+      setOutput(response.data.output);
+      setCompilationTime(response.data.compilationTime);
+      setExecutionTime(response.data.executionTime);
+      setMemoryUsed(response.data.memoryUsed);
     } catch (error) {
       setOutput("Error: " + error.message);
+      setCompilationTime("");
+      setExecutionTime("");
+      setMemoryUsed("");
     }
   };
 
@@ -238,6 +247,13 @@ int main() {
       <pre className="p-4 rounded overflow-auto bg-gray-100 dark:bg-gray-800 dark:text-white text-black">
         {output}
       </pre>
+      {compilationTime && (
+        <div className="mt-2">
+          <p className="text-black dark:text-white">Compilation Time: {compilationTime} ms</p>
+          <p className="text-black dark:text-white">Execution Time: {executionTime} ms</p>
+          <p className="text-black dark:text-white">Memory Used: {memoryUsed} KB</p>
+        </div>
+      )}
     </div>
   );
 }
