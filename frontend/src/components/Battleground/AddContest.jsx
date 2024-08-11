@@ -91,14 +91,28 @@ export default function AddContest() {
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {allProblems.map((problem) => (
                 <div key={problem.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`problem-${problem.id}`}
-                    checked={problemIds.includes(problem.id)}
-                    onChange={() => toggleProblem(problem.id)}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor={`problem-${problem.id}`} className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                  <div className="relative flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`problem-${problem.id}`}
+                      checked={problemIds.includes(problem.id)}
+                      onChange={() => toggleProblem(problem.id)}
+                      className="opacity-0 absolute h-5 w-5 cursor-pointer"
+                    />
+                    <div className={`border-2 rounded-md border-gray-400 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 ${
+                      problemIds.includes(problem.id) ? 'bg-indigo-500 border-indigo-500' : ''
+                    }`}>
+                      <svg
+                        className={`fill-current w-3 h-3 text-white pointer-events-none ${
+                          problemIds.includes(problem.id) ? 'opacity-100' : 'opacity-0'
+                        }`}
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <label htmlFor={`problem-${problem.id}`} className="ml-2 block text-sm text-gray-900 dark:text-gray-300 cursor-pointer">
                     {problem.name} - {problem.description}
                   </label>
                 </div>
