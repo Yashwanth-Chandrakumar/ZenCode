@@ -31,7 +31,6 @@ function ContestList({ contests, onSelectContest, isLoading }) {
 
   return (
     <div style={scrollbarStyle}>
-      <h2 className="text-xl font-semibold p-4">Upcoming Contests</h2>
       <ul className="space-y-2">
         {contests.map((contest) => (
           <li 

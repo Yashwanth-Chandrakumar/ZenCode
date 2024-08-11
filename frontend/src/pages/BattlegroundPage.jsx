@@ -38,6 +38,7 @@ function BattlegroundPage() {
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-64 bg-white dark:bg-gray-800 shadow-lg overflow-y-auto" style={scrollbarStyle}>
+        <h2 className="text-2xl font-semibold mb-4 p-4 text-black dark:text-white">Upcoming Contests</h2>
         <ContestList 
           contests={contests} 
           onSelectContest={setSelectedContest}
@@ -55,6 +56,12 @@ function BattlegroundPage() {
               >
                 Retry
               </button>
+            </div>
+          )}
+          {!selectedContest && !error && (
+            <div className="text-center p-4">
+              <h2 className="text-2xl font-semibold mb-4 text-black dark:text-white">Welcome to the Battleground!</h2>
+              <p className="text-gray-600 dark:text-gray-400">Select a contest from the list to view details and participate.</p>
             </div>
           )}
           {selectedContest && (
