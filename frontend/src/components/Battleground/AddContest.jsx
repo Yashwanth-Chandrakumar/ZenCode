@@ -88,9 +88,9 @@ export default function AddContest() {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Select Problems
             </label>
-            <div className="space-y-2 max-h-60 overflow-y-auto">
+            <div className="space-y-4 max-h-60 overflow-y-auto">
               {allProblems.map((problem) => (
-                <div key={problem.id} className="flex items-center">
+                <div key={problem.id} className="flex items-start space-x-3">
                   <div className="relative flex items-center">
                     <input
                       type="checkbox"
@@ -99,7 +99,7 @@ export default function AddContest() {
                       onChange={() => toggleProblem(problem.id)}
                       className="opacity-0 absolute h-5 w-5 cursor-pointer"
                     />
-                    <div className={`border-2 rounded-md border-gray-400 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 ${
+                    <div className={`border-2 rounded-md border-gray-400 w-5 h-5 flex justify-center items-center mr-2 ${
                       problemIds.includes(problem.id) ? 'bg-indigo-500 border-indigo-500' : ''
                     }`}>
                       <svg
@@ -112,9 +112,12 @@ export default function AddContest() {
                       </svg>
                     </div>
                   </div>
-                  <label htmlFor={`problem-${problem.id}`} className="ml-2 block text-sm text-gray-900 dark:text-gray-300 cursor-pointer">
-                    {problem.name} - {problem.description}
-                  </label>
+                  <div className="flex-1">
+                    <label htmlFor={`problem-${problem.id}`} className="block text-sm text-gray-900 dark:text-gray-300 cursor-pointer">
+                      <span className="font-semibold">{problem.title}</span>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">{problem.description}</p>
+                    </label>
+                  </div>
                 </div>
               ))}
             </div>
