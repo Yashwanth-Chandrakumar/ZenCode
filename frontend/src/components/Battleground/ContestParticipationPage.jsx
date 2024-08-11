@@ -12,6 +12,7 @@ function ContestParticipationPage() {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [timeLeft, setTimeLeft] = useState(3600);
   const [score, setScore] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchContest = async () => {
@@ -43,27 +44,30 @@ function ContestParticipationPage() {
   }
   const timeTakenInSeconds = 3600 - timeLeft; // Adjust if you have a different contest duration
 const formattedTimeTaken = formatTime(timeTakenInSeconds);
-  const submitContest = async () => {
-    try {
-      await fetch(`http://54.209.231.217:8080/api/leaderboard`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userName:localStorage.getItem("username"),
-            contestId: contestId,
-            email:localStorage.getItem("email"),
-            hasParticipated:true,
-            score,
-          timeTaken: formattedTimeTaken,// Adjust if you have a different contest duration
-        }),
-      });
-      navigate(`/battleground`);
-    } catch (error) {
-      console.error("Error submitting contest:", error);
-    }
-  };
+const submitContest = async () => {
+  if (isSubmitting) return; // Prevent multiple submissions
+  setIsSubmitting(true);
+  try {
+    await fetch(`http://54.209.231.217:8080/api/leaderboard`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userName: localStorage.getItem("username"),
+        contestId: contestId,
+        email: localStorage.getItem("email"),
+        hasParticipated: true,
+        score,
+        timeTaken: formattedTimeTaken,
+      }),
+    });
+    navigate(`/battleground`);
+  } catch (error) {
+    console.error("Error submitting contest:", error);
+    setIsSubmitting(false);
+  }
+};
 
   const [questionScores, setQuestionScores] = useState({});
 
@@ -91,12 +95,17 @@ const formattedTimeTaken = formatTime(timeTakenInSeconds);
           onSelectQuestion={setSelectedQuestion}
         />
         <div className="bg-white dark:bg-gray-800 p-4">
-          <button 
-            onClick={submitContest}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-          >
-            Submit Contest
-          </button>
+        <button 
+          onClick={submitContest}
+          disabled={isSubmitting}
+          className={`px-4 py-2 bg-green-500 text-white rounded-lg transition-colors ${
+            isSubmitting 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:bg-green-600'
+          }`}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit Contest'}
+        </button>
         </div>
       </div>
       <div className="flex-1 flex flex-col">
