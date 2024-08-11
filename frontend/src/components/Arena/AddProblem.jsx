@@ -133,7 +133,7 @@ export default function AddProblem() {
           <button
             type="submit"
             className="w-full bg-green-500 text-white py-2 px-4 rounded dark:bg-green-700"
-            disabled={isSubmitting} // Disable the button when submitting
+            disabled={isSubmitting}
           >
             {isSubmitting ? 'Submitting...' : 'Submit Problem'}
           </button>
