@@ -65,7 +65,7 @@ const submitContest = async () => {
     navigate(`/battleground`);
   } catch (error) {
     console.error("Error submitting contest:", error);
-    setIsSubmitting(false); // Re-enable the button if there's an error
+    setIsSubmitting(false);
   }
 };
 
