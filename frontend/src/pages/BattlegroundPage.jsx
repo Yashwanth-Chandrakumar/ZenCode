@@ -50,7 +50,7 @@ function BattlegroundPage() {
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-64 bg-white dark:bg-gray-800 shadow-lg overflow-y-auto" style={scrollbarStyle}>
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col justify-center items-center mb-5'>
         <h2 className="text-2xl font-semibold mb-4 p-4 text-black dark:text-white">Upcoming Contests</h2>
         <Link to="/addc"><button className="px-4 py-2 text-white rounded bg-green-500 hover:bg-green-600">Add Contest</button></Link>
         </div>
