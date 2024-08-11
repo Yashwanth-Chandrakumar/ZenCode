@@ -102,7 +102,7 @@ useEffect(() => {
     for (const testCase of testCases) {
       try {
         const response = await axios.post(
-          `http://100.26.207.44:8080/${endpoint}`,
+          `http://54.209.231.217:8080/${endpoint}`,
           {
             code,
             input: testCase.testCases,

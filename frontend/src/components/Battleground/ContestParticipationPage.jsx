@@ -16,7 +16,7 @@ function ContestParticipationPage() {
   useEffect(() => {
     const fetchContest = async () => {
       try {
-        const response = await fetch(`http://100.26.207.44:8080/api/contests/${contestId}`);
+        const response = await fetch(`http://54.209.231.217:8080/api/contests/${contestId}`);
         const data = await response.json();
         setContest(data);
         console.log(data)
@@ -45,7 +45,7 @@ function ContestParticipationPage() {
 const formattedTimeTaken = formatTime(timeTakenInSeconds);
   const submitContest = async () => {
     try {
-      await fetch(`http://100.26.207.44:8080/api/leaderboard`, {
+      await fetch(`http://54.209.231.217:8080/api/leaderboard`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

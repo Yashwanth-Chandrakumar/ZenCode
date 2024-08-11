@@ -11,7 +11,7 @@ function BattlegroundPage() {
   useEffect(() => {
     const fetchContests = async () => {
       try {
-        const response = await fetch('http://100.26.207.44:8080/api/contests');
+        const response = await fetch('http://54.209.231.217:8080/api/contests');
         const data = await response.json();
         setContests(data);
       } catch (error) {

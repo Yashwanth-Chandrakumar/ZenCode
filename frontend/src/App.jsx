@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+import AddProblem from './components/Arena/AddProblem'
 import ContestParticipationPage from './components/Battleground/ContestParticipationPage'
 import Editor from './components/Editor'
 import Header from './components/Header'
@@ -19,6 +20,7 @@ function App() {
             <Route path="/playground" element={<PlaygroundPage />} />
             <Route path="/arena" element={<ArenaPage />} />
             <Route path="/battleground" element={<BattlegroundPage />} />
+            <Route path="/addq" element={<AddProblem />} />
             <Route path="/contest/:contestId" element={<ContestParticipationPage />} />
             <Route path="/editor" element={<Editor />} />
           </Routes>

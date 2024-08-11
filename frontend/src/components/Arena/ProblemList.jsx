@@ -11,7 +11,7 @@ function ProblemsList({ onProblemSelect }) {
     const fetchProblems = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("http://100.26.207.44:8080/api/problems");
+        const response = await axios.get("http://54.209.231.217:8080/api/problems");
         setProblems(response.data);
         setIsLoading(false);
       } catch (error) {
