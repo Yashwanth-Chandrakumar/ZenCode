@@ -10,7 +10,7 @@ function ContestParticipationPage() {
   const navigate = useNavigate();
   const [contest, setContest] = useState(null);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(3600); // Default to 1 hour
+  const [timeLeft, setTimeLeft] = useState(3600);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function ContestParticipationPage() {
         const data = await response.json();
         setContest(data);
         console.log(data)
-        // Set time left if available in the API response
+
       } catch (error) {
         console.error("Error fetching contest:", error);
       }
