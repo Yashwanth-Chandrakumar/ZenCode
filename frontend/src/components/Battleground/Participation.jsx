@@ -10,11 +10,11 @@ function ParticipationModal({ contestId, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
-      const response = await fetch(`http://54.209.231.217:8080/api/leaderboard?contestId=${contestId}&username=${username}`);
+      const response = await fetch(`http://54.209.231.217:8080/api/leaderboard/hasParticipated?contestId=${contestId}&email=${email}`);
       const data = await response.json();
-
+  
       if (data.hasParticipated) {
         setError('You have already participated in this contest.');
       } else {

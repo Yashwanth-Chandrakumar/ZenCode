@@ -1,15 +1,16 @@
 package com.zencode.backend.service;
 
-import com.zencode.backend.dto.LeaderboardDTO;
-import com.zencode.backend.model.Contest;
-import com.zencode.backend.model.Leaderboard;
-import com.zencode.backend.repo.LeaderboardRepo;
-import com.zencode.backend.repo.ContestRepo;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.zencode.backend.dto.LeaderboardDTO;
+import com.zencode.backend.model.Contest;
+import com.zencode.backend.model.Leaderboard;
+import com.zencode.backend.repo.ContestRepo;
+import com.zencode.backend.repo.LeaderboardRepo;
 
 @Service
 public class LeaderboardService {
@@ -56,5 +57,8 @@ public class LeaderboardService {
         dto.setContestId(leaderboard.getContest().getId());
 
         return dto;
+    }
+    public boolean hasParticipated(Long contestId, String email) {
+        return leaderboardRepo.existsByContestIdAndEmail(contestId, email);
     }
 }

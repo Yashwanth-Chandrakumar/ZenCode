@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ContestDetails from '../components/Battleground/ContestDetails';
 import ContestList from '../components/Battleground/ContestList';
 import Leaderboard from '../components/Battleground/Leaderboard';
-<<<<<<< Updated upstream
+
 import axios from 'axios';
 
 const scrollbarStyle = {
@@ -12,19 +12,19 @@ const scrollbarStyle = {
     display: 'none'
   }
 };
-=======
+
 import ParticipationModal from '../components/Battleground/Participation';
->>>>>>> Stashed changes
+
 
 function BattlegroundPage() {
   const [contests, setContests] = useState([]);
   const [selectedContest, setSelectedContest] = useState(null);
-<<<<<<< Updated upstream
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-=======
+
   const [showModal, setShowModal] = useState(false);
->>>>>>> Stashed changes
+
 
   useEffect(() => {
     const fetchContests = async () => {
