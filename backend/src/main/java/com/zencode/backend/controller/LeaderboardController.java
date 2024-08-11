@@ -36,6 +36,7 @@ public class LeaderboardController {
         LeaderboardDTO createdEntry = leaderboardService.addLeaderboardEntry(leaderboardDTO);
         return ResponseEntity.ok(createdEntry);
     }
+    
     @GetMapping("/hasParticipated")
     public ResponseEntity<Map<String, Boolean>> hasParticipated(
             @RequestParam Long contestId,

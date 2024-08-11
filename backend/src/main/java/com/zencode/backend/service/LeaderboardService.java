@@ -31,7 +31,7 @@ public class LeaderboardService {
         // Convert DTO to model
         Leaderboard leaderboard = new Leaderboard();
         leaderboard.setUserName(leaderboardDTO.getUserName());
-        leaderboard.setEmail(leaderboard.getEmail());
+        leaderboard.setEmail(leaderboardDTO.getEmail());
         leaderboard.setHasParticipated(true);
         leaderboard.setScore(leaderboardDTO.getScore());
         leaderboard.setTimetaken(leaderboardDTO.getTimeTaken());
@@ -58,6 +58,7 @@ public class LeaderboardService {
 
         return dto;
     }
+
     public boolean hasParticipated(Long contestId, String email) {
         return leaderboardRepo.existsByContestIdAndEmail(contestId, email);
     }
