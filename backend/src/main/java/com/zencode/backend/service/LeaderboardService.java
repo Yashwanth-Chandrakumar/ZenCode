@@ -30,9 +30,11 @@ public class LeaderboardService {
         // Convert DTO to model
         Leaderboard leaderboard = new Leaderboard();
         leaderboard.setUserName(leaderboardDTO.getUserName());
+        leaderboard.setEmail(leaderboard.getEmail());
+        leaderboard.setHasParticipated(true);
         leaderboard.setScore(leaderboardDTO.getScore());
         leaderboard.setTimetaken(leaderboardDTO.getTimeTaken());
-        
+
         // Fetch the contest and set it
         Contest contest = contestRepo.findById(leaderboardDTO.getContestId())
                 .orElseThrow(() -> new RuntimeException("Contest not found"));
@@ -47,6 +49,8 @@ public class LeaderboardService {
         LeaderboardDTO dto = new LeaderboardDTO();
         dto.setId(leaderboard.getId());
         dto.setUserName(leaderboard.getUserName());
+        dto.setEmail(leaderboard.getEmail());
+        dto.setHasParticipated(leaderboard.isHasParticipated());
         dto.setScore(leaderboard.getScore());
         dto.setTimeTaken(leaderboard.getTimetaken());
         dto.setContestId(leaderboard.getContest().getId());

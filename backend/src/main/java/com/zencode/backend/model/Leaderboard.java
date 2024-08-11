@@ -22,13 +22,19 @@ public class Leaderboard {
     @Column(name = "user_name")
     private String userName;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "hasParticipated")
+    private boolean hasParticipated;
+
     @Column(name = "score")
     private Integer score;
 
-    @Column(name ="timetaken")
+    @Column(name = "timetaken")
     private String timetaken;
 
     @ManyToOne
-    @JoinColumn(name = "contest_id",nullable = false)
+    @JoinColumn(name = "contest_id", nullable = false)
     private Contest contest;
 }
