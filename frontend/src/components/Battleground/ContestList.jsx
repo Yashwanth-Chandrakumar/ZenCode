@@ -12,7 +12,6 @@ function ContestList({ contests, onSelectContest }) {
             onClick={() => onSelectContest(contest)}
           >
             <h3 className="font-semibold">{contest.name}</h3>
-            {/* Add start time if available in your API response */}
           </li>
         ))}
       </ul>

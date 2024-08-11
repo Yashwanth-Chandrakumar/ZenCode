@@ -11,7 +11,6 @@ function ContestDetails({ contest }) {
         </p>
         <ul className="list-disc list-inside mb-4">
           <li>Number of Problems: {contest.problems.length}</li>
-          {/* Add more details if available in your API response */}
         </ul>
       </div>
     </div>
