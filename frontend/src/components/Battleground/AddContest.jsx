@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddContest() {
   const [name, setName] = useState('');
@@ -22,7 +23,7 @@ export default function AddContest() {
       setError('Failed to fetch problems. Please try again.');
     }
   };
-
+const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -39,6 +40,7 @@ export default function AddContest() {
       setName('');
       setDescription('');
       setProblemIds([]);
+      navigate("/battleground")
     } catch (err) {
       console.error('Error adding contest:', err);
       setError('Failed to add contest. Please try again.');
