@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export default function AddProblem() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [difficulty, setDifficulty] = useState('Easy');
+  const [difficulty, setDifficulty] = useState('easy');
   const [testCases, setTestCases] = useState([{ testcases: '', answers: '' }, { testcases: '', answers: '' }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate(); 
