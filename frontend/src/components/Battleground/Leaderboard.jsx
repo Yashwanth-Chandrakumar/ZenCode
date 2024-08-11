@@ -7,7 +7,9 @@ function Leaderboard({ contestId }) {
     const fetchLeaderboard = async () => {
       try {
         const response = await fetch(`http://54.209.231.217:8080/api/leaderboard/contest/${contestId}`);
+        console.log("Response",response)
         const data = await response.json();
+        console.log("Data",data)
         setLeaderboard(data);
       } catch (error) {
         console.error("Error fetching leaderboard:", error);
