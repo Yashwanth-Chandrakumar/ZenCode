@@ -20,9 +20,10 @@ public class UnifiedCompiler {
         try {
             String code = codeRequest.getCode();
 
-            // Check for potentially malicious code
+            // Check for potentially malicious code or file paths
             if (containsMaliciousCode(code)) {
-                return ResponseEntity.ok(new CompileResponse("Error: Potentially malicious code detected."));
+                return ResponseEntity
+                        .ok(new CompileResponse("Error: Potentially malicious code or file path detected."));
             }
 
             // Compile and run based on language
@@ -137,8 +138,14 @@ public class UnifiedCompiler {
 
     private boolean containsMaliciousCode(String code) {
         List<String> dangerousCalls = Arrays.asList("system", "exec", "popen", "fork", "execve", "kill",
-                "__import__('os')", "import os");
-        return dangerousCalls.stream().anyMatch(call -> code.contains(call + "("));
+                "__import__('os')", "import os", "File.delete", "FileWriter", "PrintWriter",
+                "Runtime.getRuntime().exec");
+
+        boolean hasDangerousCalls = dangerousCalls.stream().anyMatch(code::contains);
+
+        boolean hasFilePaths = code.contains("/") || code.contains("\\") || code.matches("(?i)\\b[A-Z]:\\\\.*");
+
+        return hasDangerousCalls || hasFilePaths;
     }
 
     private String extractClassName(String code) {

@@ -14,6 +14,8 @@ import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -23,6 +25,11 @@ public class PythonCompiler {
     public ResponseEntity<CompileResponse> compileAndRunPythonCode(@RequestBody CodeRequest codeRequest) {
         try {
             String code = codeRequest.getCode();
+
+            if (containsMaliciousCode(code)) {
+                return ResponseEntity.badRequest().body(new CompileResponse("Malicious code detected."));
+            }
+
             File tempFile = File.createTempFile("code", ".py");
             try (FileWriter writer = new FileWriter(tempFile)) {
                 writer.write(code);
@@ -68,6 +75,28 @@ public class PythonCompiler {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new CompileResponse("Execution failed: " + e.getMessage()));
         }
+    }
+
+    
+    private boolean containsMaliciousCode(String code) {
+        
+        List<String> dangerousPatterns = Arrays.asList(
+                "system(", "exec(", "popen(", "fork(", "execve(", "kill(",
+                "__import__('os')", "import os", "File.delete", "FileWriter",
+                "PrintWriter", "Runtime.getRuntime().exec",
+                "os.system(", "os.exec(", "subprocess.", "socket.");
+    
+     
+        boolean hasDangerousPatterns = dangerousPatterns.stream().anyMatch(code::contains);
+    
+
+        boolean hasFilePaths = code.matches("(?i).*([a-zA-Z]:\\\\|/).*");
+    
+ 
+        boolean isFilePathOrCommand = code.matches("(?i).*([a-zA-Z]:\\\\|/).*") ||
+                                      code.matches("(?i).*\\b[A-Z]:\\\\.*");
+    
+        return hasDangerousPatterns || isFilePathOrCommand;
     }
 
     public static class CodeRequest {
@@ -132,5 +161,4 @@ public class PythonCompiler {
             this.memoryUsed = memoryUsed;
         }
     }
-
 }

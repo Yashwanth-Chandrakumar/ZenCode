@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import ProblemsDetails from "../components/Arena/ProblemDetails";
 import ProblemsList from "../components/Arena/ProblemList";
 import ArenaEditor from "../components/ArenaEditor";
@@ -24,7 +25,10 @@ function ArenaPage() {
         className="w-64 bg-white dark:bg-gray-800 shadow-lg overflow-y-auto" 
         style={scrollbarStyle}
       >
-        <h2 className="text-black dark:text-white p-4 font-semibold">Problem List</h2>
+        <div className="flex justify-around items-center">
+        <h2 className="text-black dark:text-white p-4 font-semibold">Problem List</h2>  
+        <Link to="/addq"><button className=" px-4 py-2 text-white rounded bg-green-500 hover:bg-green-600">Add Problem</button></Link>
+        </div>
         <ProblemsList onProblemSelect={handleProblemSelect} />
       </div>
 
