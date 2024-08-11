@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import ContestDetails from '../components/Battleground/ContestDetails';
 import ContestList from '../components/Battleground/ContestList';
 import Leaderboard from '../components/Battleground/Leaderboard';
+<<<<<<< Updated upstream
 import axios from 'axios';
 
 const scrollbarStyle = {
@@ -12,12 +12,19 @@ const scrollbarStyle = {
     display: 'none'
   }
 };
+=======
+import ParticipationModal from '../components/Battleground/Participation';
+>>>>>>> Stashed changes
 
 function BattlegroundPage() {
   const [contests, setContests] = useState([]);
   const [selectedContest, setSelectedContest] = useState(null);
+<<<<<<< Updated upstream
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+=======
+  const [showModal, setShowModal] = useState(false);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const fetchContests = async () => {
@@ -34,6 +41,10 @@ function BattlegroundPage() {
     };
     fetchContests();
   }, []);
+
+  const handleParticipateClick = () => {
+    setShowModal(true);
+  };
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
@@ -67,19 +78,26 @@ function BattlegroundPage() {
           {selectedContest && (
             <>
               <ContestDetails contest={selectedContest} />
-              <Link 
-                to={`/contest/${selectedContest.id}`}
+              <button 
+                onClick={handleParticipateClick}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
               >
                 Participate Now
-              </Link>
+              </button>
               <Leaderboard contestId={selectedContest.id} />
             </>
           )}
         </main>
       </div>
+      {showModal && (
+        <ParticipationModal
+          contestId={selectedContest.id}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }
 
 export default BattlegroundPage;
+
