@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const scrollbarStyle = {
   scrollbarWidth: 'none',
@@ -9,6 +9,13 @@ const scrollbarStyle = {
 };
 
 function ContestList({ contests, onSelectContest, isLoading }) {
+  const [selectedContestId, setSelectedContestId] = useState(null);
+
+  const handleContestClick = (contest) => {
+    setSelectedContestId(contest.id);
+    onSelectContest(contest);
+  };
+
   if (isLoading) {
     return (
       <div className="overflow-y-auto h-auto space-y-2" style={scrollbarStyle}>
@@ -29,10 +36,14 @@ function ContestList({ contests, onSelectContest, isLoading }) {
         {contests.map((contest) => (
           <li 
             key={contest.id} 
-            className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
-            onClick={() => onSelectContest(contest)}
+            className={`p-4 rounded-lg shadow cursor-pointer transition-colors duration-200 ${
+              selectedContestId === contest.id
+                ? "bg-blue-100 dark:bg-blue-900"
+                : "bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+            }`}
+            onClick={() => handleContestClick(contest)}
           >
-            <h3 className="font-semibold">{contest.name}</h3>
+            <h3 className="font-semibold dark:text-white">{contest.name}</h3>
           </li>
         ))}
       </ul>
