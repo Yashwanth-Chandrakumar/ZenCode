@@ -18,8 +18,9 @@ function ParticipationModal({ contestId, onClose }) {
       if (data.hasParticipated) {
         setError('You have already participated in this contest.');
       } else {
-        // Proceed to the contest
-        navigate(`/contest/${contestId}`, { state: { username, email } });
+        localStorage.setItem("username",username)
+        localStorage.setItem("email",email)
+        navigate(`/contest/${contestId}`);
       }
     } catch (error) {
       console.error("Error checking participation:", error);

@@ -51,9 +51,11 @@ const formattedTimeTaken = formatTime(timeTakenInSeconds);
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            userName:"Yashwanth",
+            userName:localStorage.getItem("username"),
             contestId: contestId,
-          score,
+            email:localStorage.getItem("email"),
+            hasParticipated:true,
+            score,
           timeTaken: formattedTimeTaken,// Adjust if you have a different contest duration
         }),
       });
