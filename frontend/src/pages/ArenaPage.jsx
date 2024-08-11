@@ -28,18 +28,17 @@ function ArenaPage() {
         <ProblemsList onProblemSelect={handleProblemSelect} />
       </div>
 
-      <div className="flex-1 flex">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <div 
-          className="w-1/2 overflow-y-auto" 
+          className="flex-1 overflow-y-auto" 
           style={scrollbarStyle}
         >
-          <ProblemsDetails problem={selectedProblem} />
-        </div>
-        <div 
-          className="w-1/2 overflow-y-auto" 
-          style={scrollbarStyle}
-        >
-          <ArenaEditor problem={selectedProblem} />
+          <div className="overflow-y-auto" style={scrollbarStyle}>
+            <ProblemsDetails problem={selectedProblem} />
+          </div>
+          <div className="overflow-y-auto" style={scrollbarStyle}>
+            <ArenaEditor problem={selectedProblem} />
+          </div>
         </div>
       </div>
     </div>
