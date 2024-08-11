@@ -110,7 +110,7 @@ public class JavaCompiler {
     }
 
     private String extractClassName(String code) {
-        // Extract class name from the Java code
+      
         String[] lines = code.split("\\n");
         for (String line : lines) {
             line = line.trim();
